@@ -12,6 +12,10 @@ def refresh_cookie(driver, path_to_cookie):
 def set_location(driver, location, delivery=True):
     location_box = driver.find_element_by_id('delivery-information-postal-index')
     location_box.send_keys(location)
+    sleep(5)
+
+    avoid_location(driver)
+
     if delivery:
         driver.find_element_by_xpath('//button[text()="外送"]').click()
     else:
@@ -63,6 +67,15 @@ def check_ad(driver):
     try:
         ad = driver.find_element_by_class_name('ab-center-cropped-img')
         ad.click()
+        sleep(1)
+    except NoSuchElementException:
+        pass
+
+# Avoid search location
+def avoid_location(driver):
+    try:
+        ex = driver.find_element_by_xpath('.//span[@class="map-close"]')
+        ex.click()
         sleep(1)
     except NoSuchElementException:
         pass
