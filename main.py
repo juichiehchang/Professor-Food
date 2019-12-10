@@ -70,10 +70,7 @@ while(is_dialog):
 		STATE = WEB_CRAWL
 
 	if STATE is WEB_CRAWL:
-		driver = webdriver.Chrome()
-
-		# get website
-		driver.get('https://www.foodpanda.com.tw/')
+		driver = startup()
 
 		# Load cookie and refresh the webpage
 		refresh_cookie(driver, './webcrawler/tmp/cookie')
