@@ -1,15 +1,13 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from time import sleep
 from cookie import load_cookie
-from functions import refresh_cookie, set_location, search_food
+from functions import startup, refresh_cookie, scroll_down, scroll_up, set_location, search_food
 from functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from functions import get_topping_lists, select_topping
 from functions import confirm_purchase, checkout
-# Using Chrome to access web
-driver = webdriver.Chrome()
 
-# Get the website
-driver.get('https://www.foodpanda.com.tw/')
+driver = startup()
 
 # Load cookie and refresh the webpage
 refresh_cookie(driver, 'tmp/cookie')
@@ -36,6 +34,10 @@ for k, vs in dish_lists.items():
     for v in vs:
         print(v.text)
 
+scroll_down(driver)
+sleep(3)
+scroll_up(driver)
+
 # Select dish
 select_dish(driver, "藜麥元氣和牛珍珠堡組合餐")
        
@@ -55,15 +57,3 @@ confirm_purchase(driver)
 # Checkout
 checkout(driver)
 exit()
-
-# click the login button
-driver.find_element_by_class_name('login-label').click()
-
-# fill in email and password
-email_box = driver.find_element_by_id('username')
-email_box.send_keys('raydeadshot@gmail.com')
-
-pass_box = driver.find_element_by_id('password')
-pass_box.send_keys('Masterchief')
-
-driver.find_element_by_xpath("//button[@type='submit']").click()

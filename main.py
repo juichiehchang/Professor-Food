@@ -5,7 +5,7 @@ import time
 from selenium import webdriver
 from time import sleep
 from webcrawler.cookie import load_cookie
-from webcrawler.functions import refresh_cookie, set_location, search_food
+from webcrawler.functions import startup, refresh_cookie, set_location, search_food
 from webcrawler.functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from webcrawler.functions import get_topping_lists, select_topping
 from webcrawler.functions import confirm_purchase, checkout

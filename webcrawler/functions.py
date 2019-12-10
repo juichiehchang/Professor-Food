@@ -1,13 +1,43 @@
 from time import sleep
-from webcrawler.cookie import load_cookie
+#from webcrawler.cookie import load_cookie
+from cookie import load_cookie
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
+
+# Startup the driver
+def startup():
+    # Using Chrome to access web
+    driver = webdriver.Chrome()
+    
+    chromeOptions = Options()
+    # Open the browser in full screen
+    chromeOptions.add_argument("--kiosk")
+    # Don't show automation mode
+    chromeOptions.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chromeOptions.add_experimental_option('useAutomationExtension', False)
+    
+    driver = webdriver.Chrome(chrome_options=chromeOptions)
+
+    # Get the website
+    driver.get('https://www.foodpanda.com.tw/')
+
+    return driver
 
 # Load cookie and refresh the website
 def refresh_cookie(driver, path_to_cookie):
     load_cookie(driver, path_to_cookie)
     driver.refresh()
     sleep(2)
-    
+
+# Scroll down
+def scroll_down(driver):
+    driver.execute_script("window.scrollTo(0, window.scrollY + 200);")
+
+# Scroll up
+def scroll_up(driver):
+    driver.execute_script("window.scrollTo(0, window.scrollY - 200);")
+
 # Set current location 
 def set_location(driver, location, delivery=True):
     location_box = driver.find_element_by_id('delivery-information-postal-index')
