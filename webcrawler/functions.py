@@ -3,7 +3,7 @@ from time import sleep
 from .cookie import load_cookie
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 import getch
 
 def keyboard(driver):
@@ -23,7 +23,7 @@ def startup():
     
     chromeOptions = Options()
     # Open the browser in full screen
-    chromeOptions.add_argument("--kiosk")
+    #chromeOptions.add_argument("--kiosk")
     # Don't show automation mode
     chromeOptions.add_experimental_option("excludeSwitches", ["enable-automation"])
     chromeOptions.add_experimental_option('useAutomationExtension', False)
@@ -128,6 +128,8 @@ def get_topping_lists(driver):
         driver.find_element_by_xpath('//div[@class="modal-body"]')
         sleep(1)
     except NoSuchElementException:
+        return None
+    except ElementNotInteractableException:
         return None
 
     # Click show-more buttons
