@@ -1,10 +1,21 @@
 from time import sleep
 #from webcrawler.cookie import load_cookie
-from cookie import load_cookie
+from .cookie import load_cookie
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
+import getch
 
+def keyboard(driver):
+    while True:
+        pressedKey = getch.getch()
+        if pressedKey == 'u':
+            scroll_up(driver)
+        elif pressedKey == 'd':
+            scroll_down(driver)
+        elif pressedKey == 'z':
+            return
+        
 # Startup the driver
 def startup():
     # Using Chrome to access web
@@ -32,11 +43,11 @@ def refresh_cookie(driver, path_to_cookie):
 
 # Scroll down
 def scroll_down(driver):
-    driver.execute_script("window.scrollTo(0, window.scrollY + 200);")
+    driver.execute_script("window.scrollTo(0, window.scrollY + 600);")
 
 # Scroll up
 def scroll_up(driver):
-    driver.execute_script("window.scrollTo(0, window.scrollY - 200);")
+    driver.execute_script("window.scrollTo(0, window.scrollY - 600);")
 
 # Set current location 
 def set_location(driver, location, delivery=True):
