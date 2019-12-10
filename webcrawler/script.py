@@ -1,6 +1,6 @@
 from selenium import webdriver
 from time import sleep
-from cookies import load_cookie
+from cookie import load_cookie
 from functions import refresh_cookie, set_location, search_food
 from functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from functions import get_topping_lists, select_topping
@@ -23,9 +23,9 @@ search_food(driver, '漢堡')
 # Get result
 restaurants = get_restaurants(driver)
 for r in restaurants:
-    print(r.text)
+    print(r.text, end = " ")
 
-print("================================================")
+print("\n================================================")
 # Select restaurant
 select_restaurant(driver, restaurants[3].text)
 

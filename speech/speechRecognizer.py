@@ -8,7 +8,7 @@ import audioop
 import os
 from chinese import ChineseAnalyzer
 
-OUTPUT_DIR = "./results/"
+OUTPUT_DIR = "./speech/results/"
 time_string = "_{:D%Y%m%dT%H%M%S}".format(datetime.datetime.now())
 
 recording_seconds = 5
@@ -61,15 +61,11 @@ class listener():
 		while (num_phrases == -1 or n > 0):
 			cur_data = stream.read(chunk)
 			slid_win.append(math.sqrt(abs(audioop.avg(cur_data, 4))))
-	    #print slid_win[-1]
 			if(sum([x > THRESHOLD for x in slid_win]) > 0):
 				if(not started):
-					#print("Starting record of phrase")
 					started = True
 				audio2send.append(cur_data)
 			elif (started is True):
-				# print("Finished")
-				# The limit was reached, finish capture and deliver.
 				filename = self.save_speech(list(prev_audio) + audio2send, p)
 				started = False
 				slid_win = deque(maxlen=int(SILENCE_LIMIT * rel))
@@ -81,12 +77,9 @@ class listener():
 			else:
 				prev_audio.append(cur_data)
 
-		# Stop and close the stream 
 		stream.stop_stream()
 		stream.close()
-		# Terminate the PortAudio interface
 		p.terminate()
-		# print('Finished recording')
 		return
 
 	def save_speech(self, data, p):
@@ -105,14 +98,8 @@ class listener():
 		say_something_yet = True
 
 		with sr.Microphone() as source:
-			# while True:
-			# 	if input("[prepare to start] Type 's' and Enter:\t") == 's':
-			# 		print("start recording")
-			# 		break
 
 			while(say_something_yet):
-
-				#print("Please ordering Food")
 
 				self.record_audio()
 				harvard = sr.AudioFile(audio_filename)
@@ -120,18 +107,17 @@ class listener():
 					audio = r.record(source)
 
 				try:
-					#print(speech_count, "\tPlease Speak Anything :")
-					#audio = r.listen(source, timeout=5.0)
-					#print("Stop listening!")
+					
 					text = r.recognize_google(audio, language = self.language)
-					#text = r.recognize(audio)
-					#print("You said : {}".format(text))
 					say_something_yet = False
+
 				except sr.RequestError as e:
+
 					say_something_yet = True
 					print("No response from Google service: {0}.".format(e))
-					text = '我想吃義大利麵'
+
 				except:
+
 					say_something_yet = True
 					print("Sorry could not recognize what you said")
 
@@ -145,14 +131,6 @@ class listener():
 		result = analyzer.parse(text, traditional = True)
 		return result.tokens()
 
-	def get_reply(self):
-
-		sentence = self.recognize()
-		analyzer = ChineseAnalyzer()
-		result = analyzer.parse(sentence, traditional = True)
-
-		return result.tokens()
-
 	def split_(self, text):
 		final = ""
 		for want in wants:
@@ -164,15 +142,18 @@ class listener():
 				final = text
 		return final
 
-
 	def find_food_to_foodpanda(self):
+
+		# get the total sentence
 		food = self.recognize()
 
+		# parsing the sentence
 		parsing = self.textParsing(food)
 		print(parsing)
 		food_text = False
 		finding_dish = False
 		food_send2panda = ""
+		# split 
 		for i in wants:
 			for j in parsing:
 				if food_text:
@@ -185,11 +166,6 @@ class listener():
 		food_send2panda = self.split_(food_send2panda)
 		return food_send2panda
 	
-
-# listen = listener()
-# food = listen.find_food_to_foodpanda()
-# print(food)
-
 
 
 

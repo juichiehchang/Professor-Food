@@ -1,5 +1,5 @@
 from time import sleep
-from cookies import load_cookie
+from webcrawler.cookie import load_cookie
 from selenium.common.exceptions import NoSuchElementException
 
 # Load cookie and refresh the website

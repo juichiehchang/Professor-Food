@@ -1,5 +1,5 @@
 from selenium import webdriver
-from cookies import save_cookie
+from cookie import save_cookie
 
 driver = webdriver.Chrome()
 driver.get('https://www.foodpanda.com.tw/')

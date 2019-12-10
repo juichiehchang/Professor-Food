@@ -10,6 +10,9 @@ class speaker():
         self.lang = lang
 
     def speak(self, sentence):
+
+        # open a temporary file to save the mp3 file
+        
         with tempfile.NamedTemporaryFile(delete = True) as fp:
             tts = gTTS(text = sentence, lang = self.lang)
             tts.save('{}.mp3'.format(fp.name))
