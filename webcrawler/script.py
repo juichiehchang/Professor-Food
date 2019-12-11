@@ -21,13 +21,12 @@ search_food(driver, '漢堡')
 # Get result
 restaurants = get_restaurants(driver)
 for r in restaurants:
-    print(r.text, end = " ")
+    print(r.text)
 
 #keyboard(driver)
 
 print("\n================================================")
 
-exit()
 # Select restaurant
 select_restaurant(driver, restaurants[3].text)
 
