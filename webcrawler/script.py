@@ -23,9 +23,11 @@ restaurants = get_restaurants(driver)
 for r in restaurants:
     print(r.text, end = " ")
 
-keyboard(driver)
+#keyboard(driver)
 
 print("\n================================================")
+
+exit()
 # Select restaurant
 select_restaurant(driver, restaurants[3].text)
 
@@ -36,7 +38,7 @@ for k, vs in dish_lists.items():
     for v in vs:
         print(v.text)
 
-keyboard(driver)
+#keyboard(driver)
 
 # Select dish
 select_dish(driver, "藜麥元氣和牛珍珠堡組合餐")

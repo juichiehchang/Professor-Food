@@ -75,8 +75,18 @@ def search_food(driver, food):
 # Get restaurant information
 def get_restaurants(driver):
     check_ad(driver)
-    restaurants = driver.find_elements_by_xpath('//span[@class="name fn"]')
-    restaurants = [r for r in restaurants if r.text != ""]
+    #restaurants = driver.find_elements_by_xpath('//span[@class="name fn"]')
+    #restaurants = [r for r in restaurants if r.text != ""]
+    restaurants = []
+    count = i = 0
+    # Only get first 10 restaurants
+    while count < 10:
+        i += 1
+        e = driver.find_element_by_xpath('(//span[@class="name fn"])[' + str(i) + ']')
+        if e.text != "":
+            restaurants += [e]
+            count += 1
+
     return restaurants
 
 # Select restaurant with the given name
@@ -129,9 +139,7 @@ def get_topping_lists(driver):
         sleep(1)
     except NoSuchElementException:
         return None
-    except ElementNotInteractableException:
-        return None
-
+    
     # Click show-more buttons
     try:
         more = driver.find_elements_by_xpath('//span[@class="product-toppings-more-chevron"]')
@@ -139,6 +147,8 @@ def get_topping_lists(driver):
             m.click()
         sleep(2)
     except NoSuchElementException:
+        pass
+    except ElementNotInteractableException:
         pass
     
     # Find topping list titles
