@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 import getch
+import re
 
 import shutil
 import requests
@@ -80,21 +81,27 @@ def search_food(driver, food):
     search_box.send_keys(food)
     sleep(5)
 
+# Strip "()"
+def strip_parentheses(s):
+    p = re.compile('\s\(.*\)')
+    return p.sub('', s, 1)
+
 # Get restaurant information
 def get_restaurants(driver):
     check_ad(driver)
     #restaurants = driver.find_elements_by_xpath('//span[@class="name fn"]')
     #restaurants = [r for r in restaurants if r.text != ""]
     restaurants = []
-    restaurants_url = []
+    selected = []
     count = i = 0
     # Only get first 10 restaurants
     while count < 10:
         i += 1
         e = driver.find_element_by_xpath('(//span[@class="name fn"])[' + str(i) + ']')
-        if e.text != "":
-
+        name = strip_parentheses(e.text)
+        if name != "" and name not in selected:
             restaurants += [e]
+            selected += [name]
             count += 1
 
     return restaurants
@@ -159,7 +166,7 @@ def show_img(list_title, path):
 
         ax.imshow(photo)
         plt.axis('off')
-        plt.title(list_title[i].text, fontproperties=myfont)
+        plt.title(strip_parentheses(list_title[i].text), fontproperties=myfont)
 
     plt.show(block=False)
     plt.pause(5)
