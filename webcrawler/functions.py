@@ -147,8 +147,8 @@ def show_img(list_title, path):
         window_x = int(n/2)
     else:
         window_x = int(n/2)+1
-
-    plt.figure(num = path, figsize = (20, 9))
+    
+    plt.figure(num = 'restaurant', figsize = (20, 9))
     for i in range(min(len(list_title), len(img_list))):
         ax = plt.subplot(2, window_x, i+1)
 
@@ -157,12 +157,11 @@ def show_img(list_title, path):
         else:
             photo = plt.imread('default.jpg')
 
-        im = ax.imshow(photo)
+        ax.imshow(photo)
         plt.axis('off')
         plt.title(list_title[i].text, fontproperties=myfont)
 
     plt.show(block=False)
-
     plt.pause(5)
     plt.close('all')
 
@@ -263,7 +262,7 @@ def get_topping_lists(driver):
 
     topping_lists = {}
     # Only parse must-pick toppings
-    titles = driver.find_elements_by_xpath('.//div[@class="product-topping-list required-list"]')
+    titles = driver.find_elements_by_xpath('.//div[contains(@class, "required-list")]')
     for t in titles:
         title = t.find_element_by_xpath('.//span[@class="product-topping-list-title-text"]').text
         count=int(t.find_element_by_xpath('.//span[@class="product-topping-list-tag"]').text.split()[0])

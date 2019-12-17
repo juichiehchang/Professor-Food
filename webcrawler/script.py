@@ -17,7 +17,7 @@ driver = startup()
 refresh_cookie(driver, './webcrawler/tmp/cookie')
 
 # Set location
-set_location(driver, '台灣大學明達館')
+set_location(driver, '台灣大學')
 
 # Search food
 search_food(driver, '漢堡')
@@ -41,7 +41,7 @@ show_img(restaurants, path = './res_img/')
 print("\n================================================")
 
 # Select restaurant
-select_restaurant(driver, restaurants[3].text)
+select_restaurant(driver, restaurants[1].text)
 
 # Get dish lists
 dish_list = []
@@ -68,7 +68,10 @@ for k, vs in dish_dict.items():
 #keyboard(driver)
 
 # Select dish
-select_dish(driver, "藜麥元氣和牛珍珠堡組合餐")
+select_dish(driver, "雙層宿醉漢堡")
+
+import pdb
+pdb.set_trace()
        
 # Get topping lists
 topping_lists = get_topping_lists(driver)
@@ -78,7 +81,7 @@ for title, [count, choices] in topping_lists.items():
         print(c)
 
 # Select topping
-select_topping(driver, "玉米濃湯")
+select_topping(driver, "")
 
 # Confirm purchase
 confirm_purchase(driver)
