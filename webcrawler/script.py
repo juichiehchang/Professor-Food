@@ -31,10 +31,10 @@ for r in restaurants:
 restaurants_url = get_restaurants_url(driver)
 
 # Request and download image from url
-download_img(restaurants_url, path = './res_img/')
+download_img(restaurants_url, path = './webcrawler/res_img/')
 
 # Display the image
-show_img(restaurants, path = './res_img/')
+show_img(restaurants, path = './webcrawler/res_img/')
 
 #keyboard(driver)
 
