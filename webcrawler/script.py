@@ -17,7 +17,7 @@ driver = startup()
 refresh_cookie(driver, './webcrawler/tmp/cookie')
 
 # Set location
-set_location(driver, '台灣大學明達館')
+set_location(driver, '台灣大學')
 
 # Search food
 search_food(driver, '漢堡')
