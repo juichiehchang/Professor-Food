@@ -6,6 +6,14 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
 import getch
 
+import shutil
+import requests
+import matplotlib.pyplot as plt
+from matplotlib import rcParams
+from matplotlib.font_manager import FontProperties
+import glob, os
+
+
 def keyboard(driver):
     while True:
         pressedKey = getch.getch()
@@ -78,16 +86,97 @@ def get_restaurants(driver):
     #restaurants = driver.find_elements_by_xpath('//span[@class="name fn"]')
     #restaurants = [r for r in restaurants if r.text != ""]
     restaurants = []
+    restaurants_url = []
     count = i = 0
     # Only get first 10 restaurants
     while count < 10:
         i += 1
         e = driver.find_element_by_xpath('(//span[@class="name fn"])[' + str(i) + ']')
         if e.text != "":
+
             restaurants += [e]
             count += 1
 
     return restaurants
+
+def get_restaurants_url(driver):
+
+    restaurants_url = []
+
+    lists = driver.find_elements_by_xpath('//ul[@class="vendor-list opened"]/li/div/a/figure/picture/div')
+
+    for i in range(10):
+        url = lists[i].get_attribute('style')
+        restaurants_url += [url]
+
+    for i in range(len(restaurants_url)):
+        if restaurants_url[i] != "":
+            restaurants_url[i] = restaurants_url[i].split('("')[1]
+            restaurants_url[i] = restaurants_url[i].split('"')[0]
+
+
+    return restaurants_url
+
+def download_img(urllist, path='./res_img/'):
+
+    for i in range(len(urllist)):
+        if urllist[i] != "":
+            response = requests.get(urllist[i], stream = True)
+            with open(path+str(i)+'.jpg', 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+            del response
+
+        else:
+            url = 'https://pbs.twimg.com/profile_images/920707349656064000/_SW1aphc_400x400.jpg'
+            response = requests.get(url, stream = True)
+            with open(path+str(i)+'.jpg', 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+            del response
+
+    return 
+
+def show_img(list_title, path):
+
+    myfont = FontProperties(fname='/System/Library/Fonts/PingFang.ttc',size=13)
+
+    img_list = sorted(glob.glob(path+'*.jpg'), key = os.path.getmtime)
+    print(img_list)
+    
+    n = len(list_title)
+    if n%2 is 0:
+        window_x = int(n/2)
+    else:
+        window_x = int(n/2)+1
+
+    plt.figure(num = path, figsize = (20, 9))
+    for i in range(min(len(list_title), len(img_list))):
+        ax = plt.subplot(2, window_x, i+1)
+
+        if img_list[i] != "":
+            photo = plt.imread(img_list[i])
+        else:
+            photo = plt.imread('default.jpg')
+
+        im = ax.imshow(photo)
+        plt.axis('off')
+        plt.title(list_title[i].text, fontproperties=myfont)
+
+    plt.show(block=False)
+
+    plt.pause(5)
+    plt.close('all')
+
+    # Delete image in folder
+    files = glob.glob(path+'*')
+    for f in files:
+        os.remove(f)
+
+    
+    return
+
+
+
+
 
 # Select restaurant with the given name
 def select_restaurant(driver, res_name):
@@ -107,6 +196,24 @@ def get_dish_lists(driver):
         dishes = lists[i].find_elements_by_xpath('.//h3[@class="dish-name fn p-name"]')
         dish_lists[headers[i].text] = [d for d in dishes if d.text != ""]
     return dish_lists
+
+def get_dish_url(driver):
+
+    dish_url = []
+
+    lists = driver.find_elements_by_xpath('//ul[@class="dish-list"]/li/div/div/picture/div')
+
+    for i in range(len(lists)):
+        url = lists[i].get_attribute('style')
+        dish_url += [url]
+
+    for i in range(len(dish_url)):
+        if dish_url[i] != "":
+            dish_url[i] = dish_url[i].split('("')[1]
+            dish_url[i] = dish_url[i].split('"')[0]
+
+    return dish_url
+
 
 # Select dish
 def select_dish(driver, dish_name):

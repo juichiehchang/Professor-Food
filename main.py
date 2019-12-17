@@ -85,7 +85,7 @@ while(is_dialog):
 		restaurants = get_restaurants(driver)
 
 		for r in restaurants:
-			print(r.text, end = " ")
+			print(r.text)
 
 		print("\n================================================")
 
