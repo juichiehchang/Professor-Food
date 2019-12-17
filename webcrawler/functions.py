@@ -181,9 +181,6 @@ def show_img(list_title, path):
     return
 
 
-
-
-
 # Select restaurant with the given name
 def select_restaurant(driver, res_name):
     check_ad(driver)
