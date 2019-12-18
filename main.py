@@ -9,6 +9,7 @@ from webcrawler.functions import startup, refresh_cookie, set_location, search_f
 from webcrawler.functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from webcrawler.functions import get_topping_lists, select_topping
 from webcrawler.functions import confirm_purchase, checkout
+from webcrawler.functions import strip_top_parentheses
 
 from chinese import ChineseAnalyzer
 import pinyin
@@ -170,7 +171,12 @@ while(is_dialog):
 
 		topping_lists = get_topping_lists(driver)
 
-		for title, [count, choices] in topping_lists.items():
+                selected = []
+                while True:
+                        topping_list = get_topping_lists(driver, selected)
+                        if not topping_list:
+                                break
+		        title, count, choices = topping_list
 
 			print(title + ":選" + str(count))
 
@@ -189,7 +195,7 @@ while(is_dialog):
 
 			for c in choices:
 
-				c_pinyin = pinyin.get(c, format = 'numerical')
+				c_pinyin = pinyin.get(strip_top_parentheses(c), format = 'numerical')
 				tmp = similar(c_pinyin, choice_pinyin)
 
 				if tmp > similarity:
@@ -219,18 +225,6 @@ while(is_dialog):
 			confirm_purchase(driver)
 			checkout(driver)
 			exit()
-
-			# click the login button
-			driver.find_element_by_class_name('login-label').click()
-
-			# fill in email and password
-			email_box = driver.find_element_by_id('username')
-			email_box.send_keys('raydeadshot@gmail.com')
-
-			pass_box = driver.find_element_by_id('password')
-			pass_box.send_keys('Masterchief')
-
-			driver.find_element_by_xpath("//button[@type='submit']").click()
 
 			is_dialog = False
 

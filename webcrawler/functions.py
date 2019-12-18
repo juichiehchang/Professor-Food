@@ -86,6 +86,11 @@ def strip_parentheses(s):
     p = re.compile('\s\(.*\)')
     return p.sub('', s, 1)
 
+# Strip topping parentheses
+def strip_top_parentheses(s):
+    p = re.compile('\u3010.*\u3011')
+    return p.sub('', s, 1)
+
 # Get restaurant information
 def get_restaurants(driver):
     check_ad(driver)
@@ -242,7 +247,7 @@ def avoid_location(driver):
         pass
 
 # Get topping_lists
-def get_topping_lists(driver):
+def get_topping_lists(driver, selected):
     # Check if there is any topping lists
     try:
         driver.find_element_by_xpath('//div[@class="modal-body"]')
@@ -269,11 +274,13 @@ def get_topping_lists(driver):
     titles = driver.find_elements_by_xpath('.//div[contains(@class, "required-list")]')
     for t in titles:
         title = t.find_element_by_xpath('.//span[@class="product-topping-list-title-text"]').text
-        count=int(t.find_element_by_xpath('.//span[@class="product-topping-list-tag"]').text.split()[0])
-        choices = [e.text for e in t.find_elements_by_xpath('.//span[@class="radio-text"]')]
-        topping_lists[title] = [count, choices]
+        if title not in selected:
+            count=int(t.find_element_by_xpath('.//span[@class="product-topping-list-tag"]').text.split()[0])
+            choices = [e.text for e in t.find_elements_by_xpath('.//span[@class="radio-text"]')]
+            selected += [title]
+            return [title, count, choices]
     
-    return topping_lists
+    return []
         
 # Select topping
 def select_topping(driver, topping_name):
