@@ -7,6 +7,7 @@ from .functions import startup, refresh_cookie, keyboard, scroll_down, scroll_up
 from .functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from .functions import confirm_purchase, checkout
 from .functions import get_restaurants_url, get_dish_url, download_img, show_img
+from .functions import strip_top_parentheses
 import glob
 import matplotlib.pyplot as plt
 
@@ -31,17 +32,18 @@ for r in restaurants:
 restaurants_url = get_restaurants_url(driver)
 
 # Request and download image from url
-download_img(restaurants_url, path = './webcrawler/res_img/')
+#download_img(restaurants_url, path = './webcrawler/res_img/')
 
 # Display the image
-show_img(restaurants, path = './webcrawler/res_img/')
+#show_img(restaurants, path = './webcrawler/res_img/')
 
 #keyboard(driver)
 
 print("\n================================================")
 
 # Select restaurant
-select_restaurant(driver, restaurants[4].text)
+
+select_restaurant(driver, restaurants[0].text)
 
 # Get dish lists
 dish_list = []
@@ -68,17 +70,33 @@ for k, vs in dish_dict.items():
 #keyboard(driver)
 
 # Select dish
+
 select_dish(driver, "藜麥元氣和牛珍珠堡組合餐")
-       
+
+
+selected = []
+
 # Get topping lists
-topping_lists = get_topping_lists(driver)
-for title, [count, choices] in topping_lists.items():
+while True:
+    print("\n================================================")
+    topping_list = get_topping_lists(driver, selected)
+    if not topping_list:
+        break
+    title, count, choices = topping_list
     print(title + ":" + "選" + str(count))
     for c in choices:
-        print(c)
+        print(strip_top_parentheses(c))
+    # Select topping
+    print("Chosen: " + choices[0])
+    select_topping(driver, choices[0])
+
+#for title, count, choices] in topping_lists.items():
+#    print(title + ":" + "選" + str(count))
+#    for c in choices:
+#        print(c)
 
 # Select topping
-select_topping(driver, "")
+#select_topping(driver, "")
 
 # Confirm purchase
 confirm_purchase(driver)
