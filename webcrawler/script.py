@@ -41,7 +41,7 @@ show_img(restaurants, path = './webcrawler/res_img/')
 print("\n================================================")
 
 # Select restaurant
-select_restaurant(driver, restaurants[1].text)
+select_restaurant(driver, restaurants[4].text)
 
 # Get dish lists
 dish_list = []
@@ -68,10 +68,7 @@ for k, vs in dish_dict.items():
 #keyboard(driver)
 
 # Select dish
-select_dish(driver, "雙層宿醉漢堡")
-
-import pdb
-pdb.set_trace()
+select_dish(driver, "藜麥元氣和牛珍珠堡組合餐")
        
 # Get topping lists
 topping_lists = get_topping_lists(driver)

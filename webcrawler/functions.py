@@ -169,7 +169,7 @@ def show_img(list_title, path):
         plt.title(strip_parentheses(list_title[i].text), fontproperties=myfont)
 
     plt.show(block=False)
-    plt.pause(5)
+    plt.pause(3)
     plt.close('all')
 
     # Delete image in folder

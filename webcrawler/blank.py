@@ -1,12 +1,39 @@
-# import requests
+# import pygame
+# import os, glob
 
-# url = 'http://172.20.10.6:3000/target'
-# myobj = {'target': '1'} # send 1 is a request that ask robot to come; 
-# #						# send 2 request to take the food
+# class pygame_layout():
+#     def __init__(self, window_width = 1200, window_height = 600, 
+#                 img_width = 150, img_height = 150):
+#         self.window_width = window_width
+#         self.window_height = window_height
+#         self.img_width = img_width
+#         self.img_height = img_height
 
-# x = requests.post(url, data = myobj)
+#     def set_img(self, img = 'default.jpg', x, y):
+#         gameDisplay.blit(img, (x, y))
 
-# print(x.text)
+
+#     def display(self, path = './res_img/'):
+        
+#         pygame.init()
+#         gameDisplay = pygame.display.set_mode((self.window_width, self.window_height))
+#         pygame.display.set_caption('A bit Racey')
+
+#         black = (0,0,0)
+#         white = (255,255,255)
+
+#         clock = pygame.time.Clock()
+#         crashed = False
+
+#         img_list = sorted(glob.glob(path+'*.jpg'), key = os.path.getmtime)
+
+#         for i in range(img_list):
+
+
+    
+#     def 
+
+
 
 
 
@@ -16,95 +43,57 @@ import os, glob
 
 from matplotlib import rcParams
 from matplotlib.font_manager import FontProperties
+from time import sleep
 
-# myfont = FontProperties(fname='/System/Library/Fonts/PingFang.ttc',size=13)
+myfont = FontProperties(fname='/System/Library/Fonts/PingFang.ttc',size=13)
 
-# list_title = []
-# myfont = FontProperties(fname='/System/Library/Fonts/PingFang.ttc',size=13)
-# path = './res_img/'
-# img_list = sorted(glob.glob(path+'*.jpg'), key = os.path.getmtime)
-# print(img_list)
+list_title = [1,2,3,4,5,6]
+myfont = FontProperties(fname='/System/Library/Fonts/PingFang.ttc',size=13)
+path = './res_img/'
+img_list = sorted(glob.glob(path+'*.jpg'), key = os.path.getmtime)
+print(img_list)
 
-# n = len(list_title)
-# if n%2 is 0:
-#     window_x = int(n/2)
-# else:
-#     window_x = int(n/2)+1
+n = len(list_title)
+if n%2 is 0:
+    window_x = int(n/2)
+else:
+    window_x = int(n/2)+1
 
-# plt.figure(num = 'restaurant', figsize = (20, 9))
-# for i in range(min(len(list_title), len(img_list))):
-#     ax = plt.subplot(2, window_x, i+1)
+plt.figure(num = 'restaurant', figsize = (20, 7))
+for i in range(min(len(list_title), len(img_list))):
+    ax = plt.subplot(2, window_x, i+1)
 
-#     if img_list[i] != "":
-#         photo = plt.imread(img_list[i])
-#     else:
-#         photo = plt.imread('default.jpg')
+    if img_list[i] != "":
+        photo = plt.imread(img_list[i])
+    else:
+        photo = plt.imread('default.jpg')
 
-#     ax.imshow(photo)
-#     plt.axis('off')
-#     plt.title(list_title[i].text, fontproperties=myfont)
+    ax.imshow(photo)
+    plt.axis('off')
+    plt.title(list_title[i], fontproperties=myfont)
 
-# plt.show(block=False)
-# plt.pause(5)
-# plt.close('all')
+plt.show(block=False)
+plt.pause(3)
+plt.close('all')
 
-# get the total sentence
+plt.figure(num = '123', figsize = (20, 7))
+for i in range(min(len(list_title), len(img_list))):
+    ax = plt.subplot(2, window_x, i+1)
 
-import pyaudio
-import wave
-import speech_recognition as sr
-import datetime
-from collections import deque
-import math
-import audioop
-import os
-from chinese import ChineseAnalyzer
+    if img_list[i] != "":
+        photo = plt.imread(img_list[i])
+    else:
+        photo = plt.imread('default.jpg')
 
+    ax.imshow(photo)
+    plt.axis('off')
+    plt.title(list_title[i], fontproperties=myfont)
 
-foo = '我想要吃巧克力'
-wants = ["一杯", "一個", "想要吃", "想要喝", "想要", "想吃", "想喝", "要", "吃"]
-
-def textParsing( text):
-
-	analyzer = ChineseAnalyzer()
-	result = analyzer.parse(text, traditional = True)
-	return result.tokens()
-
-def split_(text):
-	final = ""
-	for want in wants:
-		food = text.split(want)
-		print(food)
-		if len(food) != 1:
-			final = food[len(food)-1]
-			break
-		else:
-			final = text
-	return final
-
-# parsing the sentence
-parsing = textParsing(foo)
-
-food_text = False
-finding_dish = False
-food_send2panda = ""
-# split 
-for i in wants:
-	for j in parsing:
-		if food_text:
-			food_send2panda += j
-		if i == j:
-			food_text = True
-
-	if food_text:
-		break
-
-	if food_send2panda == "":
-		food_send2panda = parsing
-
-print("food:", food_send2panda)
-
-food_send2panda = split_(food_send2panda)
-print(food_send2panda)
+plt.show(block=False)
+plt.pause(3)
+plt.close('all')
+print(1223)
+sleep(4)
+print(1222)
 
 
