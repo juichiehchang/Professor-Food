@@ -93,6 +93,7 @@ while(is_dialog):
 
         # get all restaurants in website
         restaurants, restaurants_url = get_restaurants(driver)
+        print(restaurants_url)
         download_img(restaurants_url)
 
 
