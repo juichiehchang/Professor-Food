@@ -112,7 +112,12 @@ def get_restaurants(driver):
         if name != "" and name not in selected:
             restaurants += [name_withp]
             selected += [name]
-            urls += [e.find_element_by_xpath('.//div[contains(@class, "vendor-picture")]').get_attribute('style')]
+            restaurants_url = e.find_element_by_xpath('.//div[contains(@class, "vendor-picture")]').get_attribute('style')
+
+            if restaurants_url != "":
+                restaurants_url = restaurants_url.split('("')[1]
+                restaurants_url = restaurants_url.split('"')[0]
+            urls += [restaurants_url]
             count += 1
 
     return selected, urls
