@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 from matplotlib.font_manager import FontProperties
 import glob, os
+import copy
 
 
 def keyboard(driver):
@@ -83,8 +84,10 @@ def search_food(driver, food):
 
 # Strip "()"
 def strip_parentheses(s):
-    p = re.compile('\s\(.*\)')
-    return p.sub('', s, 1)
+    #a = copy.copy(s)
+    #p = re.compile('\s\(.*\)')
+    #return p.sub('', a, 1)
+    return s.split("(")[0]
 
 # Strip topping parentheses
 def strip_top_parentheses(s):
@@ -101,7 +104,7 @@ def get_restaurants(driver):
     urls = []
     count = i = 0
     # Only get first 10 restaurants
-    while count < 10:
+    while count <= 10:
         i += 1
         #e = driver.find_element_by_xpath('(//span[@class="name fn"])[' + str(i) + ']')
         e = driver.find_element_by_xpath('(//figure[@class="vendor-tile js-vendor-tile"])['+str(i)+']')
@@ -120,7 +123,7 @@ def get_restaurants(driver):
             urls += [restaurants_url]
             count += 1
 
-    return selected, urls
+    return restaurants, urls
 
 def get_restaurants_url(driver):
 
@@ -280,8 +283,9 @@ def get_topping_lists(driver, selected):
     # Find topping list titles
     #titles = driver.find_elements_by_xpath('//div[@class="product-topping-list"]')
 
-    topping_lists = {}
+    sleep(3)
     # Only parse must-pick toppings
+
     titles = driver.find_elements_by_xpath('.//div[contains(@class, "required-list")]')
     for t in titles:
         title = t.find_element_by_xpath('.//span[@class="product-topping-list-title-text"]').text

@@ -70,7 +70,7 @@ while(is_dialog):
         # In this state, find out what the food is ordered
         #food = listen.find_food_to_foodpanda()
         #print(food)
-        food = '漢堡'
+        food = '火鍋'
         STATE = FOOD_REPLY
 
     if STATE is FOOD_REPLY:
@@ -101,7 +101,8 @@ while(is_dialog):
         
         for i in range(len(restaurants)):
             print(strip_parentheses(restaurants[i]))
-            restaurants_without_parenthesis[i] = strip_parentheses(restaurants[i])
+            print(restaurants[i])
+            restaurants_without_parenthesis += [strip_parentheses(restaurants[i])]
 
         print("\n================================================")
 
@@ -187,42 +188,41 @@ while(is_dialog):
         sentence = "接下來請選擇您要的副餐"
         # say.speak(sentence)
         print(sentence)
-
-        topping_lists = get_topping_lists(driver)
-
         selected = []
+
+
         while True:
-                topping_list = get_topping_lists(driver, selected)
-                if not topping_list:
-                        break
-        title, count, choices = topping_list
+            topping_list = get_topping_lists(driver, selected)
+            if not topping_list:
+                break
+            title, count, choices = topping_list
 
-        print(title + ":選" + str(count))
+            print(title + ":選" + str(count))
 
-        sentence = "在" + title + "中，選擇" + str(count) + "項"
-        say.speak(sentence)
-        print("\n================================================")
+            sentence = "在" + title + "中，選擇" + str(count) + "項"
+            #say.speak(sentence)
+            print("\n================================================")
 
-        similarity = 0
+            similarity = 0
 
-        for c in choices:
-            print(c, end = 'numerical')
+            for c in choices:
+                print(c, end = 'numerical')
 
-        choice = listen.recognize()
-        print(choice)
-        choice_pinyin = pinyin.get(choice, format = 'numerical')
+            choice = listen.recognize()
+            print(choice)
+            choice_pinyin = pinyin.get(choice, format = 'numerical')
 
-        for c in choices:
+            for c in choices:
 
-            c_pinyin = pinyin.get(strip_top_parentheses(c), format = 'numerical')
-            tmp = similar(c_pinyin, choice_pinyin)
+                c_pinyin = pinyin.get(strip_top_parentheses(c), format = 'numerical')
+                tmp = similar(c_pinyin, choice_pinyin)
 
-            if tmp > similarity:
+                if tmp > similarity:
 
-                similarity = tmp
-                choose_topping = c
+                    similarity = tmp
+                    choose_topping = c
 
-        select_topping(driver, choose_topping)
+            select_topping(driver, choose_topping)
 
         STATE = ASK_SOMETHING_ELSE
 

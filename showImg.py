@@ -1,10 +1,10 @@
 def show_image(path, crashed, res_list):
     import pygame
-    import glob
+    import glob, os
     from time import sleep
     from speech.speechRecognizer import listener
     listen = listener()
-    image = glob.glob(path+'*')
+    image = sorted(glob.glob(path+'*.jpg'), key = os.path.getmtime)
 
     pygame.init()
 
@@ -29,7 +29,7 @@ def show_image(path, crashed, res_list):
         for i in range(9):
             x = 280 * (i%5)
             y = 100 + int(i/5) * 400
-            text = font.render(res_list[i].text, True, black, white)
+            text = font.render(res_list[i], True, black, white)
             textRect = text.get_rect()
             textRect.center = (130 + (i%5) * 280, 80 + int(i/5) * 400)
             img = pygame.image.load(image[i])
