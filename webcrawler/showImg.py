@@ -1,4 +1,4 @@
-def show_image(path):
+def show_image(path, crashed, res_list):
     import pygame
     import glob
     from time import sleep
@@ -16,7 +16,6 @@ def show_image(path):
     gameDisplay = pygame.display.set_mode((display_width,display_height))
     pygame.display.set_caption('A bit Racey')
 
-    crashed = False
     
     while not crashed:
         for event in pygame.event.get():
@@ -31,16 +30,14 @@ def show_image(path):
         for i in range(9):
             x = 280 * (i%5)
             y = 100 + int(i/5) * 400
-            text = font.render(image[i], True, black, white)
+            text = font.render(res_list[i], True, black, white)
             textRect = text.get_rect()
             textRect.center = (130 + (i%5) * 280, 80 + int(i/5) * 400)
             img = pygame.image.load(image[i])
             gameDisplay.blit(text, textRect)
             gameDisplay.blit(pygame.transform.scale(img,(260,200)), (x, y))
 
-
-
-
+        
 
         pygame.display.update()
 
@@ -50,6 +47,4 @@ def show_image(path):
     return
 
 
-
-
-show_image('./dish_img/')
+show_image('./dish_img/', crashed)
