@@ -24,12 +24,14 @@ set_location(driver, '台灣大學')
 search_food(driver, '漢堡')
 
 # Get result # 
-restaurants = get_restaurants(driver)
+restaurants, urls = get_restaurants(driver)
 for r in restaurants:
-    print(r.text)
+    print(r)
 
 # Get restaurants image url
 restaurants_url = get_restaurants_url(driver)
+
+exit()
 
 # Request and download image from url
 #download_img(restaurants_url, path = './webcrawler/res_img/')

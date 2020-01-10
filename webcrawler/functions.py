@@ -98,18 +98,24 @@ def get_restaurants(driver):
     #restaurants = [r for r in restaurants if r.text != ""]
     restaurants = []
     selected = []
+    urls = []
     count = i = 0
     # Only get first 10 restaurants
     while count < 10:
         i += 1
-        e = driver.find_element_by_xpath('(//span[@class="name fn"])[' + str(i) + ']')
-        name = strip_parentheses(e.text)
+        #e = driver.find_element_by_xpath('(//span[@class="name fn"])[' + str(i) + ']')
+        e = driver.find_element_by_xpath('(//figure[@class="vendor-tile js-vendor-tile"])['+str(i)+']')
+
+        name_withp = e.find_element_by_xpath('.//span[@class="name fn"]').text
+        name = strip_parentheses(name_withp)
+
         if name != "" and name not in selected:
-            restaurants += [e]
+            restaurants += [name_withp]
             selected += [name]
+            urls += [e.find_element_by_xpath('.//div[contains(@class, "vendor-picture")]').get_attribute('style')]
             count += 1
 
-    return restaurants
+    return selected, urls
 
 def get_restaurants_url(driver):
 
