@@ -2,6 +2,8 @@ def show_image(path, crashed, res_list):
     import pygame
     import glob
     from time import sleep
+    from speech.speechRecognizer import listener
+    listen = listener()
     image = glob.glob(path+'*')
 
     pygame.init()
@@ -23,14 +25,11 @@ def show_image(path, crashed, res_list):
                 crashed = True
 
         gameDisplay.fill(white)
-        #carImg = pygame.image.load('default.jpg')
-
-        #gameDisplay.blit(carImg, (0,0))
 
         for i in range(9):
             x = 280 * (i%5)
             y = 100 + int(i/5) * 400
-            text = font.render(res_list[i], True, black, white)
+            text = font.render(res_list[i].text, True, black, white)
             textRect = text.get_rect()
             textRect.center = (130 + (i%5) * 280, 80 + int(i/5) * 400)
             img = pygame.image.load(image[i])
@@ -40,11 +39,13 @@ def show_image(path, crashed, res_list):
         
 
         pygame.display.update()
+        choice = listen.recognize()
+        crashed = True
 
     pygame.quit()
-    quit()
-
-    return
 
 
-show_image('./dish_img/', crashed)
+    return choice
+
+def show_text():
+    

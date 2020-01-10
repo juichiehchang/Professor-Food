@@ -9,7 +9,7 @@ from webcrawler.functions import startup, refresh_cookie, set_location, search_f
 from webcrawler.functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from webcrawler.functions import get_topping_lists, select_topping
 from webcrawler.functions import confirm_purchase, checkout
-from webcrawler.functions import strip_top_parentheses
+from webcrawler.functions import strip_top_parentheses, strip_parentheses
 from webcrawler.functions import get_restaurants_url, download_img
 from chinese import ChineseAnalyzer
 import pinyin
@@ -17,6 +17,7 @@ from function import similar
 import pygame
 from pygame import mixer
 import glob
+from showImg import show_image
 
 
 
@@ -67,14 +68,15 @@ while(is_dialog):
     if STATE is LISTEN_FOOD:
 
         # In this state, find out what the food is ordered
-        food = listen.find_food_to_foodpanda()
-        print(food)
+        #food = listen.find_food_to_foodpanda()
+        #print(food)
+        food = '漢堡'
         STATE = FOOD_REPLY
 
     if STATE is FOOD_REPLY:
         sentence = '好的，在麩潘打上搜尋'+food+',請稍等'
         # say.speak(sentence)
-        print(sentence)
+        #print(sentence)
         STATE = WEB_CRAWL
 
     if STATE is WEB_CRAWL:
@@ -90,12 +92,15 @@ while(is_dialog):
         search_food(driver, food)
 
         # get all restaurants in website
-        restaurants = get_restaurants(driver)
-        restaurants_url = get_restaurants_url(driver)
+        restaurants, restaurants_url = get_restaurants(driver)
         download_img(restaurants_url)
 
-        for r in restaurants:
-            print(r.text)
+
+        restaurants_without_parenthesis = []
+        
+        for i in range(len(restaurants)):
+            print(strip_parentheses(restaurants[i]))
+            restaurants_without_parenthesis[i] = strip_parentheses(restaurants[i])
 
         print("\n================================================")
 
@@ -112,56 +117,11 @@ while(is_dialog):
 
     if STATE is LISTEN_RESAURANTS:
         # let the user choose one restaurant and compare its string among all candidates 
-        
 
-        image = glob.glob('./res_img/*')
-
-        pygame.init()
-
-        display_width = 1380
-        display_height = 800
-
-        white = (255,255,255)
-        black = (0,0,0)
-        font = pygame.font.Font('/System/Library/Fonts/PingFang.ttc',13)
-
-        gameDisplay = pygame.display.set_mode((display_width,display_height))
-        pygame.display.set_caption('A bit Racey')
-
-        crashed = False
-        while not crashed:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    crashed = True
-
-            gameDisplay.fill(white)
-            #carImg = pygame.image.load('default.jpg')
-
-            #gameDisplay.blit(carImg, (0,0))
-
-            for i in range(9):
-                x = 280 * (i%5)
-                y = 100 + int(i/5) * 400
-                text = font.render(restaurants[i].text, True, black, white)
-                textRect = text.get_rect()
-                textRect.center = (130 + (i%5) * 280, 80 + int(i/5) * 400)
-                img = pygame.image.load(image[i])
-                gameDisplay.blit(text, textRect)
-                gameDisplay.blit(pygame.transform.scale(img,(260,200)), (x, y))
-
-            
-
-            pygame.display.update()
-            
-            choice = listen.recognize()
-            print(choice)
-            crashed = True
-
-        pygame.quit()
-
-
+        choice = show_image('./res_img/', False, restaurants_without_parenthesis)
+        print(choice)
         choice_pinyin = pinyin.get(choice, format = "numerical")
-        restaurants_pinyin = [pinyin.get(r.text, format = "numerical") for r in restaurants]
+        restaurants_pinyin = [pinyin.get(r, format = "numerical") for r in restaurants_without_parenthesis]
         similarity = 0
         index = 0
         max_index = 0
@@ -179,7 +139,7 @@ while(is_dialog):
             index += 1
 
         print("max_index:", max_index)
-        select_restaurant(driver, restaurants[max_index].text)
+        select_restaurant(driver, restaurants[max_index])
 
         STATE = ASK_DISH
 
