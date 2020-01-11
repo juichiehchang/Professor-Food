@@ -120,7 +120,7 @@ def get_restaurants(driver):
             urls += [restaurants_url]
             count += 1
 
-    return selected, urls
+    return restaurants, urls
 
 def get_restaurants_url(driver):
 
@@ -136,7 +136,6 @@ def get_restaurants_url(driver):
         if restaurants_url[i] != "":
             restaurants_url[i] = restaurants_url[i].split('("')[1]
             restaurants_url[i] = restaurants_url[i].split('"')[0]
-
 
     return restaurants_url
 
@@ -212,6 +211,9 @@ def get_dish_lists(driver):
 
     dish_lists = {}
     for i in range(0, len(headers)):
+        # Ignore "注意事項"
+        if headers[i].text == "※注意事項":
+            continue
         dishes = lists[i].find_elements_by_xpath('.//h3[@class="dish-name fn p-name"]')
         dish_lists[headers[i].text] = [d for d in dishes if d.text != ""]
     return dish_lists
@@ -257,15 +259,18 @@ def avoid_location(driver):
     except NoSuchElementException:
         pass
 
-# Get topping_lists
-def get_topping_lists(driver, selected):
+# Check if there is any topping lists
+def check_topping_lists(driver):
+    get = True
     # Check if there is any topping lists
     try:
-        driver.find_element_by_xpath('//div[@class="modal-body"]')
-        sleep(1)
+        driver.find_element_by_xpath('//div[@class="product-add-to-cart-button js-toppings-add-to-cart button full"]')
     except NoSuchElementException:
-        return None
-    
+        get = False
+    return get
+
+# Get topping_lists
+def get_topping_lists(driver, selected):
     # Click show-more buttons
     try:
         more = driver.find_elements_by_xpath('//span[@class="product-toppings-more-chevron"]')
