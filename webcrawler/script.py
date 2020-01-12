@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from time import sleep
 from .cookie import load_cookie
-from .functions import get_topping_lists, select_topping
+from .functions import check_topping_lists, get_topping_lists, select_topping
 from .functions import startup, refresh_cookie, keyboard, scroll_down, scroll_up, set_location, search_food
 from .functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from .functions import confirm_purchase, checkout
@@ -21,7 +21,7 @@ refresh_cookie(driver, './webcrawler/tmp/cookie')
 set_location(driver, '台灣大學')
 
 # Search food
-search_food(driver, '漢堡')
+search_food(driver, '麥味登')
 
 # Get result # 
 restaurants, urls = get_restaurants(driver)
@@ -29,9 +29,7 @@ for r in restaurants:
     print(r)
 
 # Get restaurants image url
-restaurants_url = get_restaurants_url(driver)
-
-exit()
+#restaurants_url = get_restaurants_url(driver)
 
 # Request and download image from url
 #download_img(restaurants_url, path = './webcrawler/res_img/')
@@ -45,7 +43,8 @@ print("\n================================================")
 
 # Select restaurant
 
-select_restaurant(driver, restaurants[0].text)
+select_restaurant(driver, restaurants[0])
+
 
 # Get dish lists
 dish_list = []
@@ -73,8 +72,14 @@ for k, vs in dish_dict.items():
 
 # Select dish
 
-select_dish(driver, "藜麥元氣和牛珍珠堡組合餐")
-
+select_dish(driver, "火腿玉米蛋餅")
+select_dish(driver, "培根起司蛋餅")
+if not check_topping_lists(driver):
+    print("無topping")
+    checkout(driver)
+    exit()
+else:
+    exit()
 
 selected = []
 
