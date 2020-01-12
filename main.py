@@ -7,13 +7,19 @@ from time import sleep
 from webcrawler.cookie import load_cookie
 from webcrawler.functions import startup, refresh_cookie, set_location, search_food
 from webcrawler.functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
-from webcrawler.functions import get_topping_lists, select_topping
+from webcrawler.functions import check_topping_lists, get_topping_lists, select_topping
 from webcrawler.functions import confirm_purchase, checkout
-from webcrawler.functions import strip_top_parentheses
-
+from webcrawler.functions import strip_top_parentheses, strip_parentheses
+from webcrawler.functions import get_restaurants_url, download_img
 from chinese import ChineseAnalyzer
 import pinyin
 from function import similar
+import pygame
+from pygame import mixer
+import glob
+from showChoice import show_image, show_text, show_need
+
+
 
 WAITING = -1
 ASK_WHAT_FOOD = 1
@@ -45,197 +51,217 @@ restaurants = []
 
 while(is_dialog):
 
-	if STATE is WAITING:
+    if STATE is WAITING:
 
-		# maybe wait for the bot navigation
-		# after finishing navigation, state to be asking food
-		STATE = ASK_WHAT_FOOD
+        # maybe wait for the bot navigation
+        # after finishing navigation, state to be asking food
+        STATE = ASK_WHAT_FOOD
 
-	if STATE is ASK_WHAT_FOOD:
+    if STATE is ASK_WHAT_FOOD:
 
-		# Ask what user wants
-		sentence = "您好，請問想要吃點什麼呢"
-		say.speak(sentence)
-		STATE = LISTEN_FOOD
+        # Ask what user wants
+        sentence = "您好，請問想要吃點什麼呢"
+        say.speak(sentence)
+        #print(sentence)
+        STATE = LISTEN_FOOD
 
-	if STATE is LISTEN_FOOD:
+    if STATE is LISTEN_FOOD:
 
-		# In this state, find out what the food is ordered
-		food = listen.find_food_to_foodpanda()
-		print(food)
-		STATE = FOOD_REPLY
+        # In this state, find out what the food is ordered
+        mixer.music.load('./hintVoice/short.mp3')
+        mixer.music.play()
+        #food = listen.find_food_to_foodpanda()
+        #print(food)
+        food = input('壽司')
+        #food = '火鍋'
+        STATE = FOOD_REPLY
 
-	if STATE is FOOD_REPLY:
-		sentence = '好的，在麩潘打上搜尋'+food+',請稍等'
-		say.speak(sentence)
-		STATE = WEB_CRAWL
+    if STATE is FOOD_REPLY:
+        sentence = '好的，在麩潘打上搜尋'+food+',請稍等'
+        say.speak(sentence)
+        print(sentence)
+        STATE = WEB_CRAWL
 
-	if STATE is WEB_CRAWL:
-		driver = startup()
+    if STATE is WEB_CRAWL:
+        driver = startup()
 
-		# Load cookie and refresh the webpage
-		refresh_cookie(driver, './webcrawler/tmp/cookie')
+        # Load cookie and refresh the webpage
+        refresh_cookie(driver, './webcrawler/tmp/cookie')
 
-		# set location
-		set_location(driver,'台灣大學')
+        # set location
+        set_location(driver,'台灣大學')
 
-		#search food
-		search_food(driver, food)
+        #search food
+        search_food(driver, food)
 
-		# get all restaurants in website
-		restaurants = get_restaurants(driver)
+        # get all restaurants in website
+        restaurants, restaurants_url = get_restaurants(driver)
+        # print(restaurants_url)
+        download_img(restaurants_url)
 
-		for r in restaurants:
-			print(r.text)
 
-		print("\n================================================")
+        restaurants_without_parenthesis = []
+        
+        for i in range(len(restaurants)):
+            restaurants_without_parenthesis += [strip_parentheses(restaurants[i])]
 
-		STATE = ASK_RESTAURANTS
+        print("\n================================================")
 
-	if STATE is ASK_RESTAURANTS:
+        STATE = ASK_RESTAURANTS
 
-		# Ask which restaurant wants
-		sentence = '請挑選您想要的餐廳'
-		say.speak(sentence)
-		STATE = LISTEN_RESAURANTS
+    if STATE is ASK_RESTAURANTS:
 
+        # Ask which restaurant wants
 
-	if STATE is LISTEN_RESAURANTS:
-		# let the user choose one restaurant and compare its string among all candidates 
-		choice = listen.recognize()
-		print(choice)
-		choice_pinyin = pinyin.get(choice, format = "numerical")
-		restaurants_pinyin = [pinyin.get(r.text, format = "numerical") for r in restaurants]
-		similarity = 0
-		index = 0
-		max_index = 0
+        # print(sentence)
+        STATE = LISTEN_RESAURANTS
 
-		for restaurant in restaurants_pinyin:
 
-			tmp = similar(restaurant, choice_pinyin)
+    if STATE is LISTEN_RESAURANTS:
+        # let the user choose one restaurant and compare its string among all candidates 
 
+        # Show_image function will show image with pygame and return what user said
+        choice = show_image('./res_img/', False, restaurants_without_parenthesis)
+        
+        print(choice)
+        
+        choice_pinyin = pinyin.get(choice, format = "numerical")
+        restaurants_pinyin = [pinyin.get(r, format = "numerical") for r in restaurants_without_parenthesis]
+        similarity = 0
+        index = 0
+        max_index = 0
 
-			if tmp > similarity:
-				similarity = tmp
-				choose_restaurant = restaurant
-				max_index = index
+        for restaurant in restaurants_pinyin:
 
-			index += 1
+            tmp = similar(restaurant, choice_pinyin)
 
-		print("max_index:", max_index)
-		select_restaurant(driver, restaurants[max_index].text)
 
-		STATE = ASK_DISH
+            if tmp > similarity:
+                similarity = tmp
+                choose_restaurant = restaurant
+                max_index = index
 
-	if STATE is ASK_DISH:
-		# ask to choose one meal
-		dish_lists = get_dish_lists(driver)
+            index += 1
 
-		for k, vs in dish_lists.items():
-			print(k + ":")
-			for v in vs:
-				print(v.text, end = " ")
+        print("max_index:", restaurants[max_index])
+        select_restaurant(driver, restaurants[max_index])
 
-		print("\n================================================")
+        STATE = ASK_DISH
 
-		sentence = "請挑選您想吃的餐點"
-		say.speak(sentence)
+    if STATE is ASK_DISH:
+        # ask to choose one meal
+        dish_lists = get_dish_lists(driver)
+        dish = []
+        for k, vs in dish_lists.items():
+            print(k + ":")
+            for v in vs:
+                dish += [v.text]
+                print(v.text, end = " ")
 
-		STATE = LISTEN_DISH
+        print("\n================================================")
 
-	if STATE is LISTEN_DISH:
+        # print(sentence)
 
-		choice = listen.recognize()
-		print(choice)
-		choice_pinyin = pinyin.get(choice, format = 'numerical')
-		similarity = 0
+        STATE = LISTEN_DISH
 
-		for k, vs in dish_lists.items():
-			for v in vs:
+    if STATE is LISTEN_DISH:
 
-				v_pinyin = pinyin.get(v.text, format = 'numerical')
-				tmp = similar(v_pinyin, choice_pinyin)
+        choice = show_text(False, dish, "餐點")
 
-				if tmp > similarity:
-					similarity = tmp
-					choose_dish = v.text
+        print(choice)
+        choice_pinyin = pinyin.get(choice, format = 'numerical')
+        similarity = 0
 
-		select_dish(driver, choose_dish)
+        for k, vs in dish_lists.items():
+            for v in vs:
 
-		STATE = ASK_TOPPING
+                v_pinyin = pinyin.get(v.text, format = 'numerical')
+                tmp = similar(v_pinyin, choice_pinyin)
 
-	if STATE is ASK_TOPPING:
+                if tmp > similarity:
+                    similarity = tmp
+                    choose_dish = v.text
 
-		sentence = "接下來請選擇您要的副餐"
-		say.speak(sentence)
+        select_dish(driver, choose_dish)
 
-		topping_lists = get_topping_lists(driver)
+        if check_topping_lists(driver):
+            STATE = ASK_TOPPING
+        else:
+            STATE = ASK_SOMETHING_ELSE
 
-                selected = []
-                while True:
-                        topping_list = get_topping_lists(driver, selected)
-                        if not topping_list:
-                                break
-		        title, count, choices = topping_list
 
-			print(title + ":選" + str(count))
+    if STATE is ASK_TOPPING:
 
-			sentence = "在" + title + "中，選擇" + str(count) + "項"
-			say.speak(sentence)
-			print("\n================================================")
+        sentence = "接下來請選擇您要的副餐"
+        say.speak(sentence)
+        selected = []
 
-			similarity = 0
+        while True:
+            topping_list = get_topping_lists(driver, selected)
+            if not topping_list:
+                break
+            title, count, choices = topping_list
 
-			for c in choices:
-				print(c, end = 'numerical')
+            print(title + ":選" + str(count))
 
-			choice = listen.recognize()
-			print(choice)
-			choice_pinyin = pinyin.get(choice, format = 'numerical')
+            sentence = "在" + title + "中，選擇" + str(count) + "項"
+            say.speak(sentence)
+            print("\n================================================")
 
-			for c in choices:
+            similarity = 0
 
-				c_pinyin = pinyin.get(strip_top_parentheses(c), format = 'numerical')
-				tmp = similar(c_pinyin, choice_pinyin)
+            for c in choices:
+                print(c, end = 'numerical')
 
-				if tmp > similarity:
+            choice = show_text(False, choices, "副餐")
 
-					similarity = tmp
-					choose_topping = c
+            choice_pinyin = pinyin.get(choice, format = 'numerical')
 
-			select_topping(driver, choose_topping)
+            for c in choices:
 
-		STATE = ASK_SOMETHING_ELSE
+                c_pinyin = pinyin.get(strip_top_parentheses(c), format = 'numerical')
+                tmp = similar(c_pinyin, choice_pinyin)
 
-	if STATE is ASK_SOMETHING_ELSE:
+                if tmp > similarity:
 
-		sentence = "點餐完成，還需要什麼其他的嗎"
-		say.speak(sentence)
+                    similarity = tmp
+                    choose_topping = c
 
-		reply = listen.recognize()
-		print(reply)
+            select_topping(driver, choose_topping)
 
-		reply_pinyin = pinyin.get(reply, format = 'numerical')
-		similarity = similar(reply_pinyin, 'bu4yong4')
-	
-		if similarity > 0.2:
+        # 放入購物車
+        confirm_purchase(driver)
 
-			sentence = "好的，即將完成付款"
-			say.speak(sentence)
-			confirm_purchase(driver)
-			checkout(driver)
-			exit()
+        STATE = ASK_SOMETHING_ELSE
 
-			is_dialog = False
+    if STATE is ASK_SOMETHING_ELSE:
 
-			
+        sentence = "點餐完成，還需要什麼其他的嗎"
+        say.speak(sentence)
 
-		STATE = ASK_DISH
+        reply = show_need(["需要","不需要"])
 
+        reply_pinyin = pinyin.get(reply, format = 'numerical')
+        similarity = similar(reply_pinyin, 'bu4xu1yao4')
+    
+        if similarity > 0.9:
 
+            sentence = "好的，即將完成付款"
+            say.speak(sentence)
 
+            checkout(driver)
+            exit()
 
-				
+            is_dialog = False
+
+            
+
+        STATE = ASK_DISH
+
+
+
+
+                
 
 
 
@@ -271,7 +297,7 @@ while(is_dialog):
 
 
 
-		
+        
 
 
 
