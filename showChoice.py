@@ -46,7 +46,8 @@ def show_image(path, crashed, res_list):
             
             mixer.music.load('./hintVoice/short.mp3')
             mixer.music.play()
-            choice = listen.recognize()
+            #choice = listen.recognize()
+            choice = input('input restaurant: \n')
             crashed = True
         pygame.display.update()
         t += 1
@@ -101,7 +102,8 @@ def show_text(crashed, text_lists, pick:str):
             say.speak(sentence)
             mixer.music.load('./hintVoice/short.mp3')
             mixer.music.play()
-            choice = listen.recognize()
+            #choice = listen.recognize()
+            choice = input('input something: \n')
             crashed = True
         pygame.display.update()
         t += 1
@@ -118,6 +120,7 @@ def show_need(need):
     from time import sleep
     from speech.speechRecognizer import listener
     from speech.speaker import speaker
+    from pygame import mixer
     listen = listener()
     say = speaker()
 
@@ -154,7 +157,8 @@ def show_need(need):
         if t > 2:
             mixer.music.load('./hintVoice/short.mp3')
             mixer.music.play()
-            choice = listen.recognize()
+            # choice = listen.recognize()
+            choice = input('input something: \n')
             crashed = True
         pygame.display.update()
         t += 1

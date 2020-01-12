@@ -7,7 +7,7 @@ from time import sleep
 from webcrawler.cookie import load_cookie
 from webcrawler.functions import startup, refresh_cookie, set_location, search_food
 from webcrawler.functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
-from webcrawler.functions import get_topping_lists, select_topping
+from webcrawler.functions import check_topping_lists, get_topping_lists, select_topping
 from webcrawler.functions import confirm_purchase, checkout
 from webcrawler.functions import strip_top_parentheses, strip_parentheses
 from webcrawler.functions import get_restaurants_url, download_img
@@ -70,8 +70,9 @@ while(is_dialog):
         # In this state, find out what the food is ordered
         mixer.music.load('./hintVoice/short.mp3')
         mixer.music.play()
-        food = listen.find_food_to_foodpanda()
-        print(food)
+        #food = listen.find_food_to_foodpanda()
+        #print(food)
+        food = input('壽司')
         #food = '火鍋'
         STATE = FOOD_REPLY
 
@@ -102,8 +103,6 @@ while(is_dialog):
         restaurants_without_parenthesis = []
         
         for i in range(len(restaurants)):
-            # print(strip_parentheses(restaurants[i]))
-            # print(restaurants[i])
             restaurants_without_parenthesis += [strip_parentheses(restaurants[i])]
 
         print("\n================================================")
@@ -144,7 +143,7 @@ while(is_dialog):
 
             index += 1
 
-        print("max_index:", max_index)
+        print("max_index:", restaurants[max_index])
         select_restaurant(driver, restaurants[max_index])
 
         STATE = ASK_DISH
@@ -185,7 +184,11 @@ while(is_dialog):
 
         select_dish(driver, choose_dish)
 
-        STATE = ASK_TOPPING
+        if check_topping_lists(driver):
+            STATE = ASK_TOPPING
+        else:
+            STATE = ASK_SOMETHING_ELSE
+
 
     if STATE is ASK_TOPPING:
 
@@ -196,7 +199,6 @@ while(is_dialog):
         while True:
             topping_list = get_topping_lists(driver, selected)
             if not topping_list:
-                say.speak("不用選擇副餐")
                 break
             title, count, choices = topping_list
 
@@ -227,6 +229,9 @@ while(is_dialog):
 
             select_topping(driver, choose_topping)
 
+        # 放入購物車
+        confirm_purchase(driver)
+
         STATE = ASK_SOMETHING_ELSE
 
     if STATE is ASK_SOMETHING_ELSE:
@@ -239,12 +244,11 @@ while(is_dialog):
         reply_pinyin = pinyin.get(reply, format = 'numerical')
         similarity = similar(reply_pinyin, 'bu4xu1yao4')
     
-        if similarity > 0.8:
+        if similarity > 0.9:
 
             sentence = "好的，即將完成付款"
             say.speak(sentence)
 
-            confirm_purchase(driver)
             checkout(driver)
             exit()
 
