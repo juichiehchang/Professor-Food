@@ -192,14 +192,15 @@ while(is_dialog):
 
     if STATE is ASK_TOPPING:
 
-        sentence = "接下來請選擇您要的副餐"
-        say.speak(sentence)
+        
         selected = []
 
         while True:
             topping_list = get_topping_lists(driver, selected)
             if not topping_list:
                 break
+            sentence = "接下來請選擇您要的副餐"
+            say.speak(sentence)
             title, count, choices = topping_list
 
             print(title + ":選" + str(count))
@@ -262,46 +263,6 @@ while(is_dialog):
 
 
                 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-        
-
-
-
-
 
 
 

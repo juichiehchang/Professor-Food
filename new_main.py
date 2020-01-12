@@ -203,7 +203,7 @@ while(is_dialog):
             print(title + ":選" + str(count))
 
             sentence = "在" + title + "中，選擇" + str(count) + "項"
-            #say.speak(sentence)
+            say.speak(sentence)
             print("\n================================================")
 
             similarity = 0
