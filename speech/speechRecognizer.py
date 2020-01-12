@@ -11,7 +11,7 @@ from chinese import ChineseAnalyzer
 OUTPUT_DIR = "./speech/results/"
 time_string = "_{:D%Y%m%dT%H%M%S}".format(datetime.datetime.now())
 
-recording_seconds = 5
+
 audio_filename = OUTPUT_DIR + "record.wav"
 
 
@@ -121,7 +121,7 @@ class listener():
 					say_something_yet = True
 					print("Sorry could not recognize what you said")
 
-				say_something_yet = False
+				
 
 		return text
 

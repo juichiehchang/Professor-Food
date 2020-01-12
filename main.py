@@ -17,7 +17,7 @@ from function import similar
 import pygame
 from pygame import mixer
 import glob
-from showImg import show_image
+from showChoice import show_image, show_text, show_need
 
 
 
@@ -61,22 +61,24 @@ while(is_dialog):
 
         # Ask what user wants
         sentence = "您好，請問想要吃點什麼呢"
-        # say.speak(sentence)
-        print(sentence)
+        say.speak(sentence)
+        #print(sentence)
         STATE = LISTEN_FOOD
 
     if STATE is LISTEN_FOOD:
 
         # In this state, find out what the food is ordered
-        #food = listen.find_food_to_foodpanda()
-        #print(food)
-        food = '火鍋'
+        mixer.music.load('./hintVoice/short.mp3')
+        mixer.music.play()
+        food = listen.find_food_to_foodpanda()
+        print(food)
+        #food = '火鍋'
         STATE = FOOD_REPLY
 
     if STATE is FOOD_REPLY:
         sentence = '好的，在麩潘打上搜尋'+food+',請稍等'
-        # say.speak(sentence)
-        #print(sentence)
+        say.speak(sentence)
+        print(sentence)
         STATE = WEB_CRAWL
 
     if STATE is WEB_CRAWL:
@@ -93,15 +95,15 @@ while(is_dialog):
 
         # get all restaurants in website
         restaurants, restaurants_url = get_restaurants(driver)
-        print(restaurants_url)
+        # print(restaurants_url)
         download_img(restaurants_url)
 
 
         restaurants_without_parenthesis = []
         
         for i in range(len(restaurants)):
-            print(strip_parentheses(restaurants[i]))
-            print(restaurants[i])
+            # print(strip_parentheses(restaurants[i]))
+            # print(restaurants[i])
             restaurants_without_parenthesis += [strip_parentheses(restaurants[i])]
 
         print("\n================================================")
@@ -111,17 +113,19 @@ while(is_dialog):
     if STATE is ASK_RESTAURANTS:
 
         # Ask which restaurant wants
-        sentence = '請挑選您想要的餐廳'
-        # say.speak(sentence)
-        print(sentence)
+
+        # print(sentence)
         STATE = LISTEN_RESAURANTS
 
 
     if STATE is LISTEN_RESAURANTS:
         # let the user choose one restaurant and compare its string among all candidates 
 
+        # Show_image function will show image with pygame and return what user said
         choice = show_image('./res_img/', False, restaurants_without_parenthesis)
+        
         print(choice)
+        
         choice_pinyin = pinyin.get(choice, format = "numerical")
         restaurants_pinyin = [pinyin.get(r, format = "numerical") for r in restaurants_without_parenthesis]
         similarity = 0
@@ -148,23 +152,23 @@ while(is_dialog):
     if STATE is ASK_DISH:
         # ask to choose one meal
         dish_lists = get_dish_lists(driver)
-
+        dish = []
         for k, vs in dish_lists.items():
             print(k + ":")
             for v in vs:
+                dish += [v.text]
                 print(v.text, end = " ")
 
         print("\n================================================")
 
-        sentence = "請挑選您想吃的餐點"
-        # say.speak(sentence)
-        print(sentence)
+        # print(sentence)
 
         STATE = LISTEN_DISH
 
     if STATE is LISTEN_DISH:
 
-        choice = listen.recognize()
+        choice = show_text(False, dish, "餐點")
+
         print(choice)
         choice_pinyin = pinyin.get(choice, format = 'numerical')
         similarity = 0
@@ -186,21 +190,20 @@ while(is_dialog):
     if STATE is ASK_TOPPING:
 
         sentence = "接下來請選擇您要的副餐"
-        # say.speak(sentence)
-        print(sentence)
+        say.speak(sentence)
         selected = []
-
 
         while True:
             topping_list = get_topping_lists(driver, selected)
             if not topping_list:
+                say.speak("不用選擇副餐")
                 break
             title, count, choices = topping_list
 
             print(title + ":選" + str(count))
 
             sentence = "在" + title + "中，選擇" + str(count) + "項"
-            #say.speak(sentence)
+            say.speak(sentence)
             print("\n================================================")
 
             similarity = 0
@@ -208,8 +211,8 @@ while(is_dialog):
             for c in choices:
                 print(c, end = 'numerical')
 
-            choice = listen.recognize()
-            print(choice)
+            choice = show_text(False, choices, "副餐")
+
             choice_pinyin = pinyin.get(choice, format = 'numerical')
 
             for c in choices:
@@ -229,20 +232,18 @@ while(is_dialog):
     if STATE is ASK_SOMETHING_ELSE:
 
         sentence = "點餐完成，還需要什麼其他的嗎"
-        # say.speak(sentence)
-        print(sentence)
+        say.speak(sentence)
 
-        reply = listen.recognize()
-        print(reply)
+        reply = show_need(["需要","不需要"])
 
         reply_pinyin = pinyin.get(reply, format = 'numerical')
-        similarity = similar(reply_pinyin, 'bu4yong4')
+        similarity = similar(reply_pinyin, 'bu4xu1yao4')
     
-        if similarity > 0.2:
+        if similarity > 0.8:
 
             sentence = "好的，即將完成付款"
-            # say.speak(sentence)
-            print(sentence)
+            say.speak(sentence)
+
             confirm_purchase(driver)
             checkout(driver)
             exit()
