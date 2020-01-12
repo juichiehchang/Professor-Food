@@ -28,7 +28,7 @@ def keyboard(driver):
 # Startup the driver
 def startup():
     # Using Chrome to access web
-    driver = webdriver.Chrome()
+    #driver = webdriver.Chrome()
     
     chromeOptions = Options()
     # Open the browser in full screen
@@ -264,7 +264,7 @@ def check_topping_lists(driver):
     get = True
     # Check if there is any topping lists
     try:
-        driver.find_element_by_xpath('//div[@class="product-add-to-cart-button js-toppings-add-to-cart button full"]')
+        driver.find_element_by_xpath('//div[@class="product-add-to-cart"]')
     except NoSuchElementException:
         get = False
     return get

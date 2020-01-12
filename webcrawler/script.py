@@ -41,6 +41,8 @@ for r in restaurants:
 
 print("\n================================================")
 
+print(restaurants[0])
+sleep(3)
 # Select restaurant
 select_restaurant(driver, restaurants[0])
 
@@ -69,13 +71,14 @@ for k, vs in dish_dict.items():
 #keyboard(driver)
 
 # Select dish
-select_dish(driver, "火腿玉米蛋餅")
-select_dish(driver, "培根起司蛋餅")
+#select_dish(driver, "花生熔岩咔啦雞腿堡XL套餐 (中辣)")
+select_dish(driver, "幸福特餐")
 if not check_topping_lists(driver):
     print("無topping")
     checkout(driver)
     exit()
 else:
+    print("pick topping")
     exit()
 #import pdb
 #pdb.set_trace()
