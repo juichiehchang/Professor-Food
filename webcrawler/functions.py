@@ -202,7 +202,9 @@ def show_img(list_title, path):
 # Select restaurant with the given name
 def select_restaurant(driver, res_name):
     check_ad(driver)
-    driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]').click()
+    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]')
+    sleep(1)
+    r.click()
     sleep(5)
 
 # Get dish lists
@@ -294,7 +296,8 @@ def get_topping_lists(driver, selected):
     titles = driver.find_elements_by_xpath('.//div[contains(@class, "required-list")]')
     for t in titles:
         title = t.find_element_by_xpath('.//span[@class="product-topping-list-title-text"]').text
-        if title not in selected:
+        # ignore 注意事項
+        if title not in selected and title != "※注意事項":
             count=int(t.find_element_by_xpath('.//span[@class="product-topping-list-tag"]').text.split()[0])
             choices = [e.text for e in t.find_elements_by_xpath('.//span[@class="radio-text"]')]
             selected += [title]
