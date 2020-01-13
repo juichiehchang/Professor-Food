@@ -317,10 +317,10 @@ def select_topping(driver, topping_name):
     sleep(1)
 
 # Special instruction
-def instruction(driver, message):
+def send_instruction(driver, message):
     i = driver.find_elemetn_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
     i.send_key(message)
-    sleep(5)
+    sleep(3)
 
 # Confirm purchase
 def confirm_purchase(driver):
