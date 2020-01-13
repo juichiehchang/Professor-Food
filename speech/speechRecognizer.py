@@ -164,8 +164,8 @@ class listener():
 				break
 		
 		food_send2panda = self.split_(food_send2panda)
+		if not food_send2panda:
+			food_send2panda = food
 		return food_send2panda
 	
-
-
 
