@@ -50,8 +50,15 @@ restaurants = []
 driver = startup()
 # Load cookie and refresh the webpage
 refresh_cookie(driver, './webcrawler/tmp/cookie')
-# set location
-set_location(driver,'台灣大學')
+# # set location
+set_location(driver,'芳蘭路49號')
+
+# Send Request
+import requests
+#url = 'http://172.20.10.6:3000/target'
+#myobj = {'target': '1'}
+#x = requests.post(url, data = myobj)
+
 
 while(is_dialog):
 
@@ -76,7 +83,7 @@ while(is_dialog):
         mixer.music.play()
         food = listen.find_food_to_foodpanda()
         while not food:
-            say.speak('我不清楚，請再講一次')
+            say.speak('我聽不清楚，請再講一次')
             food = listen.find_food_to_foodpanda()
         mixer.music.load('./hintVoice/short.mp3')
         mixer.music.play()
@@ -182,7 +189,7 @@ while(is_dialog):
         say.speak('請選擇您要的餐點')
         choice = show_text(False, dish)
         while not choice:
-            say.speak('我聽不清楚，請再請一次')
+            say.speak('我聽不清楚，請再講一次')
             choice = show_text(False, dish)
 
         choice_pinyin = pinyin.get(choice, format = 'numerical')
@@ -211,7 +218,25 @@ while(is_dialog):
         
         selected = []
 
-        if get_topping_lists(driver, []):
+        first_result = get_topping_lists(driver, [])
+        # fake topping list
+        if 'fake' in first_result:
+            STATE = ASK_SOMETHING_ELSE
+            continue
+            
+        # only optional topping list
+        elif not first_result:
+            say.speak('請說出對餐點的特別要求')
+            mixer.music.load('./hintVoice/short.mp3')
+            mixer.music.play()
+            instruction = listen.recognize()
+            send_instruction(driver, instruction)
+            # 放入購物車
+            confirm_purchase(driver)
+            STATE = ASK_SOMETHING_ELSE
+            continue
+        # normal
+        else:
             sentence = "接下來請選擇您要的副餐"
             say.speak(sentence)
 
@@ -254,7 +279,7 @@ while(is_dialog):
 
             select_topping(driver, choose_topping, title)
 
-        say.speak('有對餐點的任何要求嗎')
+        say.speak('請說出對餐點的特別要求')
         mixer.music.load('./hintVoice/short.mp3')
         mixer.music.play()
         instruction = listen.recognize()
@@ -292,9 +317,14 @@ while(is_dialog):
         STATE = ASK_DISH
 
 
-
-
+#myobj = {'target': '2'}
+#x = requests.post(url, data = myobj)
                 
 
+input()
 
+
+myobj = {'target': '1'}
+x = requests.post(url, data = myobj)
+                
 

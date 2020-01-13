@@ -62,13 +62,13 @@ def scroll_down(driver):
 
 # Scroll up
 def scroll_up(driver):
-    driver.execute_script("window.scrollTo(0, window.scrollY - 600);")
+    driver.execute_script("window.scrollTo(0, 0);")
 
 # Set current location 
 def set_location(driver, location, delivery=True):
     location_box = driver.find_element_by_id('delivery-information-postal-index')
     location_box.send_keys(location)
-    sleep(5)
+    sleep(3)
 
     avoid_location(driver)
 
@@ -76,7 +76,7 @@ def set_location(driver, location, delivery=True):
         driver.find_element_by_xpath('//button[text()="外送"]').click()
     else:
         driver.find_element_by_xpath('//button[text()="外帶自取"]').click()
-    sleep(5)
+    sleep(3)
 
 # Search for food
 def search_food(driver, food):
@@ -85,7 +85,7 @@ def search_food(driver, food):
     driver.find_element_by_xpath('//span[@class="search-icon"]').click()
     search_box = driver.find_element_by_class_name('restaurants-search-input')
     search_box.send_keys(food)
-    sleep(5)
+    sleep(3)
 
 # Strip "()"
 def strip_parentheses(s):
@@ -256,6 +256,7 @@ def get_dish_url(driver):
 
 # Select dish
 def select_dish(driver, dish_name):
+    scroll_up(driver)
     driver.find_element_by_xpath('//span[text()="' + dish_name + '"]').click()
     sleep(2)
     
@@ -279,13 +280,12 @@ def avoid_location(driver):
 
 # Check if there is any topping lists
 def check_topping_lists(driver):
-    get = True
     # Check if there is any topping lists
     try:
         driver.find_element_by_xpath('//div[@class="product-add-to-cart"]')
     except NoSuchElementException:
-        get = False
-    return get
+        return False
+    return True
 
 # Get topping_lists
 def get_topping_lists(driver, selected):
@@ -311,6 +311,9 @@ def get_topping_lists(driver, selected):
         title = t.find_element_by_xpath('.//span[@class="product-topping-list-title-text"]').text
         # ignore 注意事項
         if title not in selected and title != "※注意事項":
+            c_str = t.find_element_by_xpath('.//span[@class="product-topping-list-tag"]').text.split()
+            if not c_str:
+                return ['fake']
             count=int(t.find_element_by_xpath('.//span[@class="product-topping-list-tag"]').text.split()[0])
             choices = [e.text for e in t.find_elements_by_xpath('.//span[@class="radio-text"]')]
             selected += [title]
@@ -339,7 +342,7 @@ def send_instruction(driver, message):
 # Confirm purchase
 def confirm_purchase(driver):
     driver.find_element_by_xpath('//button[@class="product-add-to-cart-button js-toppings-add-to-cart button full"]').click()
-    sleep(5)
+    sleep(3)
 
 # Checkout
 def checkout(driver):

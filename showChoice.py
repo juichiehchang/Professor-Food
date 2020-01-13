@@ -4,12 +4,16 @@ def show_image(path, crashed, res_list):
     from time import sleep
     from speech.speechRecognizer import listener
     from speech.speaker import speaker
-    from pygame import mixer
+    from pygame import mixer 
+    from pygame.locals import FULLSCREEN, HWSURFACE
+
     listen = listener()
     say = speaker()
     image = sorted(glob.glob(path+'*'), key = os.path.getmtime)
     print(res_list)
     print(image)
+
+
     pygame.init()
 
     display_width = 1380
@@ -19,7 +23,7 @@ def show_image(path, crashed, res_list):
     black = (0,0,0)
     font = pygame.font.Font('/System/Library/Fonts/PingFang.ttc',13)
 
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
+    gameDisplay = pygame.display.set_mode((display_width,display_height), HWSURFACE | FULLSCREEN, 32)
     pygame.display.set_caption('A bit Racey')
 
     t = 0
@@ -63,14 +67,16 @@ def show_image(path, crashed, res_list):
 def show_text(crashed, text_lists):
 
     import pygame
-    import glob
+    import glob, os
     from time import sleep
     from speech.speechRecognizer import listener
     from speech.speaker import speaker
     from pygame import mixer
+    from pygame.locals import FULLSCREEN, HWSURFACE
     listen = listener()
     say = speaker()
 
+    os.environ['SDL_VIDEO_CENTERED'] = '1'
     pygame.init()
 
     display_width = 1380
@@ -80,7 +86,7 @@ def show_text(crashed, text_lists):
     black = (0,0,0)
     font = pygame.font.Font('/System/Library/Fonts/PingFang.ttc',20)
 
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
+    gameDisplay = pygame.display.set_mode((display_width,display_height), HWSURFACE | FULLSCREEN, 32)
     pygame.display.set_caption('A bit Racey')
 
     t = 0 
@@ -123,9 +129,8 @@ def show_need(need):
     from speech.speechRecognizer import listener
     from speech.speaker import speaker
     from pygame import mixer
+    from pygame.locals import FULLSCREEN, HWSURFACE
     listen = listener()
-    say = speaker()
-
     pygame.init()
 
     display_width = 1380
@@ -135,7 +140,7 @@ def show_need(need):
     black = (0,0,0)
     font = pygame.font.Font('/System/Library/Fonts/PingFang.ttc',20)
 
-    gameDisplay = pygame.display.set_mode((display_width,display_height))
+    gameDisplay = pygame.display.set_mode((display_width,display_height), HWSURFACE | FULLSCREEN, 32)
     pygame.display.set_caption('A bit Racey')
 
     t = 0 
