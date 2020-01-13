@@ -4,6 +4,10 @@ from .cookie import load_cookie
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException, ElementNotInteractableException
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException
 import getch
 import re
 
@@ -202,10 +206,12 @@ def show_img(list_title, path):
 # Select restaurant with the given name
 def select_restaurant(driver, res_name):
     check_ad(driver)
-    # scroll_down(driver)
-    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]')
-    sleep(1)
-    r.click()
+
+    try:
+        r = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(By.XPATH, '//span[@class="name fn" and text()="' + res_name + '"]'))
+        r.click()
+    except TimeoutException:
+        print("Wait too long, not clickable")
     sleep(3)
 
 # Get dish lists
@@ -319,7 +325,7 @@ def select_topping(driver, topping_name):
 
 # Special instruction
 def send_instruction(driver, message):
-    i = driver.find_element_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
+    i = driver.find_element_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal"]')
     i.send_key(message)
     sleep(3)
 
