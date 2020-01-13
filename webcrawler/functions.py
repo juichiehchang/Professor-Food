@@ -203,7 +203,7 @@ def show_img(list_title, path):
 def select_restaurant(driver, res_name):
     check_ad(driver)
     scroll_down(driver)
-    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]/parent::*/parent::*/parent::*/parent::a')
+    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]')
     sleep(1)
     r.click()
     sleep(3)
