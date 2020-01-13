@@ -47,7 +47,11 @@ say = speaker()
 food = ""
 restaurants = []
 
-
+driver = startup()
+# Load cookie and refresh the webpage
+refresh_cookie(driver, './webcrawler/tmp/cookie')
+# set location
+set_location(driver,'台灣大學')
 
 while(is_dialog):
 
@@ -83,13 +87,12 @@ while(is_dialog):
         STATE = WEB_CRAWL
 
     if STATE is WEB_CRAWL:
-        driver = startup()
+        
 
-        # Load cookie and refresh the webpage
-        refresh_cookie(driver, './webcrawler/tmp/cookie')
+        
+        
 
-        # set location
-        set_location(driver,'台灣大學')
+        
 
         #search food
         search_food(driver, food)
@@ -169,7 +172,6 @@ while(is_dialog):
         say.speak('請選擇您要的餐點')
         choice = show_text(False, dish)
 
-        print(choice)
         choice_pinyin = pinyin.get(choice, format = 'numerical')
         similarity = 0
 
