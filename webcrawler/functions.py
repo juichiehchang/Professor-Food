@@ -316,6 +316,12 @@ def select_topping(driver, topping_name):
             break
     sleep(1)
 
+# Special instruction
+def instruction(driver, message):
+    i = driver.find_elemetn_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
+    i.send_key(message)
+    sleep(5)
+
 # Confirm purchase
 def confirm_purchase(driver):
     driver.find_element_by_xpath('//button[@class="product-add-to-cart-button js-toppings-add-to-cart button full"]').click()
