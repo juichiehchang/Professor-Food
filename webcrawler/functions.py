@@ -318,7 +318,7 @@ def select_topping(driver, topping_name):
 
 # Special instruction
 def send_instruction(driver, message):
-    i = driver.find_elemetn_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
+    i = driver.find_element_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
     i.send_key(message)
     sleep(3)
 
