@@ -10,7 +10,7 @@ from webcrawler.functions import get_restaurants, select_restaurant, get_dish_li
 from webcrawler.functions import check_topping_lists, get_topping_lists, select_topping
 from webcrawler.functions import confirm_purchase, checkout
 from webcrawler.functions import strip_top_parentheses, strip_parentheses
-from webcrawler.functions import get_restaurants_url, download_img
+from webcrawler.functions import get_restaurants_url, download_img, send_instruction
 from chinese import ChineseAnalyzer
 import pinyin
 from function import similar
@@ -202,7 +202,8 @@ while(is_dialog):
             sentence = "接下來請選擇您要的副餐"
             say.speak(sentence)
             title, count, choices = topping_list
-
+            if not choices:
+                continue
             print(title + ":選" + str(count))
 
             sentence = "在" + title + "中，選擇" + str(count) + "項"
@@ -230,6 +231,9 @@ while(is_dialog):
 
             select_topping(driver, choose_topping)
 
+        say.speak('有對餐點的任何要求嗎')
+        instruction = listen.recognize()
+        send_instruction(driver, instruction)
         # 放入購物車
         confirm_purchase(driver)
 
