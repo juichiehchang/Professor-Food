@@ -202,7 +202,7 @@ def show_img(list_title, path):
 # Select restaurant with the given name
 def select_restaurant(driver, res_name):
     check_ad(driver)
-    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]')
+    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]/parent::span')
     sleep(1)
     r.click()
     sleep(5)
@@ -318,7 +318,7 @@ def select_topping(driver, topping_name):
 
 # Special instruction
 def send_instruction(driver, message):
-    i = driver.find_elemetn_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
+    i = driver.find_element_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal')
     i.send_key(message)
     sleep(3)
 
