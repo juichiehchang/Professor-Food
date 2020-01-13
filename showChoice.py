@@ -58,7 +58,7 @@ def show_image(path, crashed, res_list):
 
     return choice
 
-def show_text(crashed, text_lists, pick:str):
+def show_text(crashed, text_lists):
 
     import pygame
     import glob
@@ -98,8 +98,6 @@ def show_text(crashed, text_lists, pick:str):
             gameDisplay.blit(text, textRect)
 
         if t > 2:
-            sentence = "請挑選您想要的" + pick
-            say.speak(sentence)
             mixer.music.load('./hintVoice/short.mp3')
             mixer.music.play()
             #choice = listen.recognize()

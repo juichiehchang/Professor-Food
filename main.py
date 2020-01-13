@@ -166,7 +166,8 @@ while(is_dialog):
 
     if STATE is LISTEN_DISH:
 
-        choice = show_text(False, dish, "餐點")
+        say.speak('請選擇您要的餐點')
+        choice = show_text(False, dish)
 
         print(choice)
         choice_pinyin = pinyin.get(choice, format = 'numerical')
@@ -195,12 +196,15 @@ while(is_dialog):
         
         selected = []
 
+        if get_topping_lists(driver, []):
+            sentence = "接下來請選擇您要的副餐"
+            say.speak(sentence)
+
         while True:
             topping_list = get_topping_lists(driver, selected)
             if not topping_list:
                 break
-            sentence = "接下來請選擇您要的副餐"
-            say.speak(sentence)
+            
             title, count, choices = topping_list
             if not choices:
                 continue
@@ -215,7 +219,7 @@ while(is_dialog):
             for c in choices:
                 print(c, end = 'numerical')
 
-            choice = show_text(False, choices, "副餐")
+            choice = show_text(False, choices)
 
             choice_pinyin = pinyin.get(choice, format = 'numerical')
 
