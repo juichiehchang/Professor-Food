@@ -208,7 +208,7 @@ def select_restaurant(driver, res_name):
     check_ad(driver)
 
     try:
-        r = WebDriverWait(driver, 5).until(EC.element_to_be_clickable(By.XPATH, '//span[@class="name fn" and text()="' + res_name + '"]'))
+        r = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//span[@class="name fn" and text()="' + res_name + '"]')))
         r.click()
     except TimeoutException:
         print("Wait too long, not clickable")
@@ -313,10 +313,11 @@ def get_topping_lists(driver, selected):
     return []
         
 # Select topping
-def select_topping(driver, topping_name):
+def select_topping(driver, topping_name, title):
     # Space problem!!!
     #driver.find_element_by_xpath('.//span[@class="radio-text" and text()="'+ topping_name +'"]').click()
-    elements = driver.find_elements_by_xpath('//span[@class="radio-text"]')
+    t = driver.find_element_by_xpath('//span[@class="product-topping-list-title-text" and text()="' + title + '"]/parent::h3/parent::div')
+    elements = t.find_elements_by_xpath('.//span[@class="radio-text"]')
     for e in elements:
         if topping_name in e.text:
             e.click()
@@ -326,7 +327,7 @@ def select_topping(driver, topping_name):
 # Special instruction
 def send_instruction(driver, message):
     i = driver.find_element_by_xpath('//textarea[@class="product-special-instructions-textarea js-topping-special-instructions js-input-in-modal"]')
-    i.send_key(message)
+    i.send_keys(message)
     sleep(3)
 
 # Confirm purchase

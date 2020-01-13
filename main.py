@@ -75,7 +75,15 @@ while(is_dialog):
         mixer.music.load('./hintVoice/short.mp3')
         mixer.music.play()
         food = listen.find_food_to_foodpanda()
+        while not food:
+            say.speak('我不清楚，請再講一次')
+            food = listen.find_food_to_foodpanda()
+        mixer.music.load('./hintVoice/short.mp3')
+        mixer.music.play()
         print(food)
+        
+
+
         #food = input('壽司')
         #food = '火鍋'
         STATE = FOOD_REPLY
@@ -125,7 +133,9 @@ while(is_dialog):
 
         # Show_image function will show image with pygame and return what user said
         choice = show_image('./res_img/', False, restaurants_without_parenthesis)
-        
+        while not choice:
+            say.speak('我聽不清楚，請再講一次')
+            choice = show_image('./res_img/', False, restaurants_without_parenthesis)
         print(choice)
         
         choice_pinyin = pinyin.get(choice, format = "numerical")
@@ -171,6 +181,9 @@ while(is_dialog):
 
         say.speak('請選擇您要的餐點')
         choice = show_text(False, dish)
+        while not choice:
+            say.speak('我聽不清楚，請再請一次')
+            choice = show_text(False, dish)
 
         choice_pinyin = pinyin.get(choice, format = 'numerical')
         similarity = 0
@@ -222,6 +235,9 @@ while(is_dialog):
                 print(c, end = 'numerical')
 
             choice = show_text(False, choices)
+            if not choice:
+                say.speak('我聽不清楚，請再講一次')
+                choice = show_text(False, choices)
 
             choice_pinyin = pinyin.get(choice, format = 'numerical')
 
@@ -234,10 +250,13 @@ while(is_dialog):
 
                     similarity = tmp
                     choose_topping = c
+            print('topping chosen', choose_topping)
 
-            select_topping(driver, choose_topping)
+            select_topping(driver, choose_topping, title)
 
         say.speak('有對餐點的任何要求嗎')
+        mixer.music.load('./hintVoice/short.mp3')
+        mixer.music.play()
         instruction = listen.recognize()
         send_instruction(driver, instruction)
         # 放入購物車
@@ -251,6 +270,9 @@ while(is_dialog):
         say.speak(sentence)
 
         reply = show_need(["需要","不需要"])
+        while not reply:
+            say.speak('我聽不清楚，請再講一次')
+            reply = show_need(["需要","不需要"])
 
         reply_pinyin = pinyin.get(reply, format = 'numerical')
         similarity = similar(reply_pinyin, 'bu4xu1yao4')

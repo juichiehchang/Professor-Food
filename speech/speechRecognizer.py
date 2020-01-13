@@ -120,6 +120,7 @@ class listener():
 
 					say_something_yet = True
 					print("Sorry could not recognize what you said")
+					return ""
 
 				
 
@@ -149,7 +150,7 @@ class listener():
 
 		# parsing the sentence
 		parsing = self.textParsing(food)
-		print(parsing)
+		#print(parsing)
 		food_text = False
 		finding_dish = False
 		food_send2panda = ""
