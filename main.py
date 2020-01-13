@@ -74,9 +74,9 @@ while(is_dialog):
         # In this state, find out what the food is ordered
         mixer.music.load('./hintVoice/short.mp3')
         mixer.music.play()
-        #food = listen.find_food_to_foodpanda()
-        #print(food)
-        food = input('壽司')
+        food = listen.find_food_to_foodpanda()
+        print(food)
+        #food = input('壽司')
         #food = '火鍋'
         STATE = FOOD_REPLY
 

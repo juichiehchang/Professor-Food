@@ -46,8 +46,8 @@ def show_image(path, crashed, res_list):
             
             mixer.music.load('./hintVoice/short.mp3')
             mixer.music.play()
-            #choice = listen.recognize()
-            choice = input('input restaurant: \n')
+            choice = listen.recognize()
+            #choice = input('input restaurant: \n')
             crashed = True
         pygame.display.update()
         t += 1
@@ -100,8 +100,8 @@ def show_text(crashed, text_lists):
         if t > 2:
             mixer.music.load('./hintVoice/short.mp3')
             mixer.music.play()
-            #choice = listen.recognize()
-            choice = input('input something: \n')
+            choice = listen.recognize()
+            #choice = input('input something: \n')
             crashed = True
         pygame.display.update()
         t += 1
