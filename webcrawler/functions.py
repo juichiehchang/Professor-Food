@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.keys import Keys
 import getch
 import re
 
@@ -207,11 +208,16 @@ def show_img(list_title, path):
 def select_restaurant(driver, res_name):
     check_ad(driver)
 
-    try:
-        r = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//span[@class="name fn" and text()="' + res_name + '"]')))
-        r.click()
-    except TimeoutException:
-        print("Wait too long, not clickable")
+    #try:
+    #    r = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, '//span[@class="name fn" and text()="' + res_name + '"]/parent::span/parent::figcaption/parent::figure/parent::a')))
+    #    r.click()
+    #except TimeoutException:
+    #    print("Wait too long, not clickable")
+    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]/parent::span/parent::figcaption/parent::figure/parent::a')
+    href = r.get_attribute('href')
+    driver.execute_script("window.open('" + href + "');")
+    driver.switch_to.window(driver.window_handles[1])
+
     sleep(3)
 
 # Get dish lists
