@@ -53,7 +53,7 @@ def refresh_cookie(driver, path_to_cookie):
 
 # Scroll down
 def scroll_down(driver):
-    driver.execute_script("window.scrollTo(0, window.scrollY + 600);")
+    driver.execute_script("window.scrollTo(0, window.scrollY + 400);")
 
 # Scroll up
 def scroll_up(driver):
@@ -202,10 +202,11 @@ def show_img(list_title, path):
 # Select restaurant with the given name
 def select_restaurant(driver, res_name):
     check_ad(driver)
-    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]/parent::span')
+    scroll_down(driver)
+    r = driver.find_element_by_xpath('//span[@class="name fn" and text()="' + res_name + '"]/parent::*/parent::*/parent::*/parent::a')
     sleep(1)
     r.click()
-    sleep(5)
+    sleep(3)
 
 # Get dish lists
 def get_dish_lists(driver):
