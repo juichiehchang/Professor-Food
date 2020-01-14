@@ -8,7 +8,7 @@ from webcrawler.cookie import load_cookie
 from webcrawler.functions import startup, refresh_cookie, set_location, search_food
 from webcrawler.functions import get_restaurants, select_restaurant, get_dish_lists, select_dish
 from webcrawler.functions import check_topping_lists, get_topping_lists, select_topping
-from webcrawler.functions import confirm_purchase, checkout
+from webcrawler.functions import confirm_purchase, checkout, finish_and_pay
 from webcrawler.functions import strip_top_parentheses, strip_parentheses
 from webcrawler.functions import get_restaurants_url, download_img, send_instruction
 from chinese import ChineseAnalyzer
@@ -55,9 +55,11 @@ set_location(driver,'芳蘭路49號')
 
 # Send Request
 import requests
-#url = 'http://172.20.10.6:3000/target'
-#myobj = {'target': '1'}
-#x = requests.post(url, data = myobj)
+url = 'http://172.104.64.221:3000/target'
+# myobj = {'target': '1'}
+# x = requests.post(url, data = myobj)
+
+# print('send request:', x)
 
 
 while(is_dialog):
@@ -89,10 +91,6 @@ while(is_dialog):
         mixer.music.play()
         print(food)
         
-
-
-        #food = input('壽司')
-        #food = '火鍋'
         STATE = FOOD_REPLY
 
     if STATE is FOOD_REPLY:
@@ -308,7 +306,8 @@ while(is_dialog):
             say.speak(sentence)
 
             checkout(driver)
-            exit()
+            finish_and_pay(driver)
+            break
 
             is_dialog = False
 
@@ -316,14 +315,15 @@ while(is_dialog):
 
         STATE = ASK_DISH
 
+say.speak('機器人已前去取餐，請稍等')
 
-#myobj = {'target': '2'}
-#x = requests.post(url, data = myobj)
+# myobj = {'target': '2'}
+# x = requests.post(url, data = myobj)
                 
 
 input()
 
-
+say.speak('機器人即將送餐抵達，請準備取餐')
 myobj = {'target': '1'}
 x = requests.post(url, data = myobj)
                 

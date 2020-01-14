@@ -7,6 +7,7 @@ from selenium.common.exceptions import NoSuchElementException, ElementNotInterac
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.keys import Keys
 import getch
@@ -38,7 +39,7 @@ def startup():
     
     chromeOptions = Options()
     # Open the browser in full screen
-    #chromeOptions.add_argument("--kiosk")
+    chromeOptions.add_argument("--window-size=1920,1080")
     # Don't show automation mode
     chromeOptions.add_experimental_option("excludeSwitches", ["enable-automation"])
     chromeOptions.add_experimental_option('useAutomationExtension', False)
@@ -291,7 +292,7 @@ def check_topping_lists(driver):
 def get_topping_lists(driver, selected):
     # Click show-more buttons
     try:
-        more = driver.find_elements_by_xpath('//span[@class="product-toppings-more-chevron"]')
+        more = driver.find_elements_by_xpath('//span[@class="product-toppings-more-chevron"]/parent::a')
         for m in more:
             m.click()
         sleep(2)
@@ -351,5 +352,8 @@ def checkout(driver):
 
 # Finish and pay
 def finish_and_pay(driver):
-    driver.find_element_by_xpath('.//button[@class="button checkout__payment__finish-and-pay-submit-button js-ripple]').click()
+    target = driver.find_element_by_xpath('.//button[@class="button checkout__payment__finish-and-pay-submit-button js-ripple"]')
+    ActionChains(driver).move_to_element(target).click_and_hold().perform()
+    sleep(1)
+    ActionChains(driver).release().perform()
     sleep(2)

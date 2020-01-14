@@ -10,10 +10,6 @@ def show_image(path, crashed, res_list):
     listen = listener()
     say = speaker()
     image = sorted(glob.glob(path+'*'), key = os.path.getmtime)
-    print(res_list)
-    print(image)
-
-
     pygame.init()
 
     display_width = 1380

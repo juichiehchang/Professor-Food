@@ -31,7 +31,7 @@ PREV_AUDIO = 0.5  # Previous audio (in seconds) to prepend. When noise
                   # is detected, how much of previously recorded audio is
                   # prepended. This helps to prevent chopping the beggining
                   # of the phrase.
-wants = ["一杯", "一個", "想要吃", "想要喝", "想要", "想吃", "想喝", "要", "吃"]
+wants = ["一杯", "一個", "想要吃", "想要喝", "想要", "想吃", "想喝", "要", "吃", "喝"]
 
 class listener():
 
